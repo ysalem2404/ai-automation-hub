@@ -28,18 +28,16 @@ jobs:
           node-version: '20'
           
       - name: Install dependencies
-        working-directory: ./data-matcher-react
         run: npm install
         
       - name: Build React app
-        working-directory: ./data-matcher-react
         run: npm run build
         
       - name: Create deployment structure
         run: |
           mkdir -p _site/tools/data-matcher
           cp index.html _site/
-          cp -r data-matcher-react/dist/* _site/tools/data-matcher/
+          cp -r dist/* _site/tools/data-matcher/
         
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
