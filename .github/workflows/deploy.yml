@@ -37,25 +37,20 @@ jobs:
         run: |
           echo "===== Contents of dist folder ====="
           ls -lah dist/
-          echo "===== Recursive listing ====="
           find dist/ -type f
         
       - name: Create deployment structure
         run: |
-          echo "Creating directory structure..."
           mkdir -p _site/tools/data-matcher
           
           echo "Copying landing page..."
-          cp index.html _site/index.html
+          cp landing.html _site/index.html
           
           echo "Copying React app..."
           cp -r dist/. _site/tools/data-matcher/
           
-          echo "===== Final _site structure ====="
+          echo "===== Final structure ====="
           find _site/ -type f
-          
-          echo "===== Verifying data matcher files ====="
-          ls -lah _site/tools/data-matcher/
         
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
