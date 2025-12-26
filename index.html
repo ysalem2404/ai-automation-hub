@@ -1,13 +1,395 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Data Matcher - AI Automation Hub</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI & Automation Hub - Professional Data Tools</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+        .tool-card {
+            transition: all 0.3s ease;
+        }
+        .tool-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .coming-soon-badge {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header/Navigation -->
+    <nav class="gradient-bg text-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-6">
+                <div class="flex items-center space-x-3">
+                    <i class="fas fa-robot text-4xl"></i>
+                    <div>
+                        <h1 class="text-2xl font-bold">AI & Automation Hub</h1>
+                        <p class="text-sm text-purple-200">Professional Data Tools Suite</p>
+                    </div>
+                </div>
+                <div class="hidden md:flex space-x-6">
+                    <a href="#tools" class="hover:text-purple-200 transition">Tools</a>
+                    <a href="#about" class="hover:text-purple-200 transition">About</a>
+                    <a href="#contact" class="hover:text-purple-200 transition">Contact</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="gradient-bg text-white py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="fade-in">
+                <h2 class="text-5xl md:text-6xl font-bold mb-6">
+                    Automate Your Data Workflows
+                </h2>
+                <p class="text-xl md:text-2xl mb-8 text-purple-100 max-w-3xl mx-auto">
+                    Powerful AI-driven tools to streamline data matching, processing, and analysis. 
+                    Save hours of manual work with intelligent automation.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="#tools" class="bg-white text-purple-600 px-8 py-4 rounded-lg font-semibold hover:bg-purple-50 transition shadow-lg">
+                        <i class="fas fa-tools mr-2"></i>Explore Tools
+                    </a>
+                    <a href="https://github.com/ysalem2404/ai-automation-hub" target="_blank" class="bg-purple-700 text-white px-8 py-4 rounded-lg font-semibold hover:bg-purple-800 transition shadow-lg">
+                        <i class="fab fa-github mr-2"></i>View on GitHub
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="py-12 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
+                <div class="fade-in">
+                    <div class="text-4xl font-bold text-purple-600 mb-2">1+</div>
+                    <div class="text-gray-600">Active Tools</div>
+                </div>
+                <div class="fade-in" style="animation-delay: 0.1s;">
+                    <div class="text-4xl font-bold text-purple-600 mb-2">100%</div>
+                    <div class="text-gray-600">Browser-Based</div>
+                </div>
+                <div class="fade-in" style="animation-delay: 0.2s;">
+                    <div class="text-4xl font-bold text-purple-600 mb-2">5+</div>
+                    <div class="text-gray-600">Tools Coming Soon</div>
+                </div>
+                <div class="fade-in" style="animation-delay: 0.3s;">
+                    <div class="text-4xl font-bold text-purple-600 mb-2">Free</div>
+                    <div class="text-gray-600">Open Source</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tools Section -->
+    <section id="tools" class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-800 mb-4">Our Tools</h2>
+                <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                    Professional-grade automation tools designed to save you time and increase accuracy
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Data Matcher - Active -->
+                <div class="tool-card bg-white rounded-xl shadow-lg overflow-hidden">
+                    <div class="p-8">
+                        <div class="w-16 h-16 bg-gradient-to-br from-green-400 to-blue-500 rounded-lg flex items-center justify-center mb-6">
+                            <i class="fas fa-code-compare text-3xl text-white"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-800 mb-3">Data Matcher</h3>
+                        <p class="text-gray-600 mb-6">
+                            Match and merge Excel data from multiple sources using advanced fuzzy matching algorithms. 
+                            Handle up to 5 sources simultaneously with intelligent confidence scoring.
+                        </p>
+                        <div class="flex flex-wrap gap-2 mb-6">
+                            <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm">Active</span>
+                            <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm">Excel</span>
+                            <span class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm">Fuzzy Match</span>
+                        </div>
+                        <a href="./tools/data-matcher/" class="block w-full bg-gradient-to-r from-green-400 to-blue-500 text-white text-center py-3 rounded-lg font-semibold hover:from-green-500 hover:to-blue-600 transition">
+                            <i class="fas fa-rocket mr-2"></i>Launch Tool
+                        </a>
+                    </div>
+                </div>
+
+                <!-- PDF Processor - Coming Soon -->
+                <div class="tool-card bg-white rounded-xl shadow-lg overflow-hidden relative opacity-90">
+                    <span class="coming-soon-badge">Coming Soon</span>
+                    <div class="p-8">
+                        <div class="w-16 h-16 bg-gradient-to-br from-red-400 to-pink-500 rounded-lg flex items-center justify-center mb-6">
+                            <i class="fas fa-file-pdf text-3xl text-white"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-800 mb-3">PDF Processor</h3>
+                        <p class="text-gray-600 mb-6">
+                            Extract, merge, split, and convert PDF files. Batch process multiple documents with 
+                            OCR capabilities and intelligent text extraction.
+                        </p>
+                        <div class="flex flex-wrap gap-2 mb-6">
+                            <span class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm">Planned</span>
+                            <span class="px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm">PDF</span>
+                            <span class="px-3 py-1 bg-pink-100 text-pink-700 rounded-full text-sm">OCR</span>
+                        </div>
+                        <button disabled class="block w-full bg-gray-300 text-gray-500 text-center py-3 rounded-lg font-semibold cursor-not-allowed">
+                            <i class="fas fa-clock mr-2"></i>In Development
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Text Analyzer - Coming Soon -->
+                <div class="tool-card bg-white rounded-xl shadow-lg overflow-hidden relative opacity-90">
+                    <span class="coming-soon-badge">Coming Soon</span>
+                    <div class="p-8">
+                        <div class="w-16 h-16 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-lg flex items-center justify-center mb-6">
+                            <i class="fas fa-brain text-3xl text-white"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-800 mb-3">AI Text Analyzer</h3>
+                        <p class="text-gray-600 mb-6">
+                            Analyze sentiment, extract keywords, summarize documents, and detect language. 
+                            Powered by advanced NLP algorithms for accurate insights.
+                        </p>
+                        <div class="flex flex-wrap gap-2 mb-6">
+                            <span class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm">Planned</span>
+                            <span class="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-sm">NLP</span>
+                            <span class="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-sm">AI</span>
+                        </div>
+                        <button disabled class="block w-full bg-gray-300 text-gray-500 text-center py-3 rounded-lg font-semibold cursor-not-allowed">
+                            <i class="fas fa-clock mr-2"></i>In Development
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Image Tools - Coming Soon -->
+                <div class="tool-card bg-white rounded-xl shadow-lg overflow-hidden relative opacity-90">
+                    <span class="coming-soon-badge">Coming Soon</span>
+                    <div class="p-8">
+                        <div class="w-16 h-16 bg-gradient-to-br from-purple-400 to-indigo-500 rounded-lg flex items-center justify-center mb-6">
+                            <i class="fas fa-image text-3xl text-white"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-800 mb-3">Image Optimizer</h3>
+                        <p class="text-gray-600 mb-6">
+                            Batch resize, compress, and convert images. Support for multiple formats with 
+                            quality presets and watermarking capabilities.
+                        </p>
+                        <div class="flex flex-wrap gap-2 mb-6">
+                            <span class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm">Planned</span>
+                            <span class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm">Images</span>
+                            <span class="px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-sm">Batch</span>
+                        </div>
+                        <button disabled class="block w-full bg-gray-300 text-gray-500 text-center py-3 rounded-lg font-semibold cursor-not-allowed">
+                            <i class="fas fa-clock mr-2"></i>In Development
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Data Cleaner - Coming Soon -->
+                <div class="tool-card bg-white rounded-xl shadow-lg overflow-hidden relative opacity-90">
+                    <span class="coming-soon-badge">Coming Soon</span>
+                    <div class="p-8">
+                        <div class="w-16 h-16 bg-gradient-to-br from-teal-400 to-cyan-500 rounded-lg flex items-center justify-center mb-6">
+                            <i class="fas fa-broom text-3xl text-white"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-800 mb-3">Data Cleaner</h3>
+                        <p class="text-gray-600 mb-6">
+                            Remove duplicates, fix formatting issues, validate data, and standardize entries. 
+                            Automated cleaning rules with manual override options.
+                        </p>
+                        <div class="flex flex-wrap gap-2 mb-6">
+                            <span class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm">Planned</span>
+                            <span class="px-3 py-1 bg-teal-100 text-teal-700 rounded-full text-sm">Excel</span>
+                            <span class="px-3 py-1 bg-cyan-100 text-cyan-700 rounded-full text-sm">Cleaning</span>
+                        </div>
+                        <button disabled class="block w-full bg-gray-300 text-gray-500 text-center py-3 rounded-lg font-semibold cursor-not-allowed">
+                            <i class="fas fa-clock mr-2"></i>In Development
+                        </button>
+                    </div>
+                </div>
+
+                <!-- API Connector - Coming Soon -->
+                <div class="tool-card bg-white rounded-xl shadow-lg overflow-hidden relative opacity-90">
+                    <span class="coming-soon-badge">Coming Soon</span>
+                    <div class="p-8">
+                        <div class="w-16 h-16 bg-gradient-to-br from-pink-400 to-rose-500 rounded-lg flex items-center justify-center mb-6">
+                            <i class="fas fa-plug text-3xl text-white"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-800 mb-3">API Connector</h3>
+                        <p class="text-gray-600 mb-6">
+                            Connect to REST APIs, fetch data, and automate workflows. Visual API builder 
+                            with authentication support and data transformation.
+                        </p>
+                        <div class="flex flex-wrap gap-2 mb-6">
+                            <span class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm">Planned</span>
+                            <span class="px-3 py-1 bg-pink-100 text-pink-700 rounded-full text-sm">API</span>
+                            <span class="px-3 py-1 bg-rose-100 text-rose-700 rounded-full text-sm">Integration</span>
+                        </div>
+                        <button disabled class="block w-full bg-gray-300 text-gray-500 text-center py-3 rounded-lg font-semibold cursor-not-allowed">
+                            <i class="fas fa-clock mr-2"></i>In Development
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-800 mb-4">Why Choose Our Tools?</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+                <div class="text-center">
+                    <div class="w-20 h-20 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-shield-alt text-3xl text-purple-600"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">100% Privacy</h3>
+                    <p class="text-gray-600">
+                        All processing happens in your browser. Your data never leaves your computer.
+                    </p>
+                </div>
+                <div class="text-center">
+                    <div class="w-20 h-20 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-bolt text-3xl text-purple-600"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">Lightning Fast</h3>
+                    <p class="text-gray-600">
+                        Optimized algorithms process thousands of records in seconds.
+                    </p>
+                </div>
+                <div class="text-center">
+                    <div class="w-20 h-20 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-heart text-3xl text-purple-600"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">Free & Open Source</h3>
+                    <p class="text-gray-600">
+                        All tools are free to use. View the source code and contribute on GitHub.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-20 bg-gray-50">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-4xl font-bold text-gray-800 mb-6">About AI & Automation Hub</h2>
+            <p class="text-xl text-gray-600 mb-8">
+                We're building a comprehensive suite of AI-powered automation tools to help professionals 
+                work smarter, not harder. Each tool is designed with privacy, speed, and ease of use in mind.
+            </p>
+            <p class="text-lg text-gray-600">
+                Our mission is to make powerful data processing and automation accessible to everyone, 
+                without the need for coding skills or expensive software subscriptions.
+            </p>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="gradient-bg text-white py-20">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-4xl font-bold mb-6">Ready to Automate Your Workflow?</h2>
+            <p class="text-xl mb-8 text-purple-100">
+                Start using our tools today and experience the power of intelligent automation.
+            </p>
+            <a href="#tools" class="inline-block bg-white text-purple-600 px-8 py-4 rounded-lg font-semibold hover:bg-purple-50 transition shadow-lg">
+                <i class="fas fa-tools mr-2"></i>Get Started Now
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact" class="bg-gray-800 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">AI & Automation Hub</h3>
+                    <p class="text-gray-400">
+                        Professional data tools powered by AI and automation.
+                    </p>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Quick Links</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#tools" class="hover:text-white transition">Tools</a></li>
+                        <li><a href="#about" class="hover:text-white transition">About</a></li>
+                        <li><a href="https://github.com/ysalem2404/ai-automation-hub" target="_blank" class="hover:text-white transition">GitHub</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Connect</h3>
+                    <div class="flex space-x-4">
+                        <a href="https://github.com/ysalem2404/ai-automation-hub" target="_blank" class="text-gray-400 hover:text-white transition">
+                            <i class="fab fa-github text-2xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition">
+                            <i class="fab fa-linkedin text-2xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition">
+                            <i class="fab fa-twitter text-2xl"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2024 AI & Automation Hub. All rights reserved. Built with ❤️ for data professionals.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // Animate elements on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('fade-in');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.tool-card').forEach(card => {
+            observer.observe(card);
+        });
+    </script>
+</body>
 </html>
