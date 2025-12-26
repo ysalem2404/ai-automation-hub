@@ -28,15 +28,23 @@ jobs:
           node-version: '20'
           
       - name: Install dependencies
-        run: npm ci
+        working-directory: ./data-matcher-react
+        run: npm install
         
-      - name: Build
+      - name: Build React app
+        working-directory: ./data-matcher-react
         run: npm run build
+        
+      - name: Create deployment structure
+        run: |
+          mkdir -p _site/tools/data-matcher
+          cp index.html _site/
+          cp -r data-matcher-react/dist/* _site/tools/data-matcher/
         
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./dist
+          path: ./_site
 
   deploy:
     environment:
@@ -48,3 +56,49 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+```
+
+5. Commit message: `Update workflow for landing page + React app`
+6. Click **"Commit changes"**
+
+---
+
+## Step 5: Watch the Magic Happen! ✨
+
+1. Go to **Actions** tab
+2. You'll see a new workflow running
+3. Click on it to watch progress
+4. Wait 3-5 minutes
+
+**Expected steps:**
+- ✅ Checkout
+- ✅ Setup Node
+- ✅ Install dependencies
+- ✅ Build React app
+- ✅ Create deployment structure
+- ✅ Upload artifact
+- ✅ Deploy
+
+---
+
+## Step 6: Test Everything!
+
+**Once workflow shows all green checkmarks:**
+
+### Test Landing Page:
+```
+https://ysalem2404.github.io/ai-automation-hub/
+```
+
+**Should see:**
+- Beautiful gradient header
+- Hero section
+- Tool cards (Data Matcher + 5 Coming Soon)
+- Footer
+
+### Test Data Matcher:
+Click **"Launch Tool"** button on Data Matcher card
+
+**Should go to:**
+```
+https://ysalem2404.github.io/ai-automation-hub/tools/data-matcher/
