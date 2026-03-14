@@ -1,0 +1,130 @@
+name: "Terraform — Thasaa Blue Infrastructure"
+
+on:
+  push:
+    branches: [main]
+    paths: ["**/*.tf", "**/*.tfvars", ".github/workflows/terraform.yml"]
+  pull_request:
+    branches: [main]
+    paths: ["**/*.tf", "**/*.tfvars", ".github/workflows/terraform.yml"]
+
+permissions:
+  contents: read
+  id-token: write       # Required for Workload Identity Federation
+  pull-requests: write  # Required to post plan comments on PRs
+
+env:
+  TF_VERSION: "1.5.7"
+  WORKLOAD_IDENTITY_PROVIDER: "projects/${{ secrets.GCP_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/github-pool/providers/github-provider"
+  SERVICE_ACCOUNT: "terraform-ci@${{ secrets.GCP_PROJECT_ID }}.iam.gserviceaccount.com"
+
+jobs:
+  # ===========================================================================
+  # Terraform Plan — runs on every push and PR
+  # ===========================================================================
+  plan:
+    name: "Terraform Plan"
+    runs-on: ubuntu-latest
+    outputs:
+      exitcode: ${{ steps.plan.outputs.exitcode }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ env.SERVICE_ACCOUNT }}
+          token_format: access_token
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: Terraform Init
+        id: init
+        run: terraform init -input=false
+
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate -no-color
+
+      - name: Terraform Plan
+        id: plan
+        run: |
+          terraform plan -input=false -no-color -out=tfplan \
+            -var-file=terraform.tfvars \
+            -detailed-exitcode
+        continue-on-error: true
+
+      - name: Post Plan to PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const output = `#### Terraform Plan 📋
+            \`\`\`
+            ${{ steps.plan.outputs.stdout }}
+            \`\`\`
+
+            *Triggered by @${{ github.actor }} in commit \`${{ github.sha }}\`*`;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: output.substring(0, 65536)
+            });
+
+      - name: Upload Plan Artifact
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: actions/upload-artifact@v4
+        with:
+          name: tfplan
+          path: tfplan
+          retention-days: 1
+
+      - name: Plan Status
+        if: steps.plan.outputs.exitcode == '1'
+        run: exit 1
+
+  # ===========================================================================
+  # Terraform Apply — runs only on merge to main
+  # ===========================================================================
+  apply:
+    name: "Terraform Apply"
+    runs-on: ubuntu-latest
+    needs: plan
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && needs.plan.outputs.exitcode == '2'
+    environment: production
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ env.SERVICE_ACCOUNT }}
+          token_format: access_token
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: Terraform Init
+        run: terraform init -input=false
+
+      - name: Download Plan Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: tfplan
+
+      - name: Terraform Apply
+        run: terraform apply -input=false -auto-approve tfplan
