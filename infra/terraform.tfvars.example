@@ -1,0 +1,47 @@
+# =============================================================================
+# Thasaa Blue — AI Operations Hub — Terraform Variables
+# =============================================================================
+# Copy this file to terraform.tfvars and fill in the values.
+# Do NOT commit terraform.tfvars to version control.
+# =============================================================================
+
+project_id  = "thasaa-blue"
+region      = "us-central1"
+environment = "dev"
+
+# Container image for the AI Ops Portal (Cloud Run)
+# Build and push to Artifact Registry before deploying:
+#   gcloud builds submit --tag us-docker.pkg.dev/thasaa-blue/ai-ops/portal:latest
+portal_image = "us-docker.pkg.dev/thasaa-blue/ai-ops/portal:latest"
+
+# Cloud SQL tier — adjust for environment:
+#   dev:     db-f1-micro
+#   staging: db-custom-2-7680
+#   prod:    db-custom-4-15360
+db_tier = "db-f1-micro"
+
+# Cloud SQL availability — ZONAL for dev/staging, REGIONAL for prod
+db_availability_type = "ZONAL"
+
+# Enable Vertex AI resources
+enable_vertex_ai = true
+
+# Monitoring notification email
+notification_email = "ops@thasaa.com"
+
+# Custom domain (leave empty to skip domain mapping)
+domain_name = ""
+
+# Cloud Run scaling
+cloud_run_min_instances = 0
+cloud_run_max_instances = 10
+
+# Connector function definitions (defaults are usually fine)
+# connector_functions = {
+#   acc-connector = {
+#     description = "ACC system integration connector"
+#     entry_point = "handle_acc_event"
+#     memory_mb   = 256
+#     timeout_s   = 120
+#   }
+# }
