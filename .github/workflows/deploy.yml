@@ -51,7 +51,7 @@ jobs:
           cp -r dist/. _site/tools/data-matcher/
           
           echo "Copying Medical Equipment Map..."
-          cp tools/med-equipment-map/index.html _site/tools/med-equipment-map/index.html
+          cp -r tools/med-equipment-map/. _site/tools/med-equipment-map/
           
           echo "===== Final structure ====="
           find _site/ -type f
