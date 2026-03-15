@@ -43,6 +43,7 @@ jobs:
         run: |
           mkdir -p _site/tools/data-matcher
           mkdir -p _site/tools/med-equipment-map
+          mkdir -p _site/tools/ai-datacenter-map
           
           echo "Copying landing page..."
           cp landing.html _site/index.html
@@ -52,6 +53,9 @@ jobs:
           
           echo "Copying Medical Equipment Map..."
           cp -r tools/med-equipment-map/. _site/tools/med-equipment-map/
+          
+          echo "Copying AI Datacenter Map..."
+          cp -r tools/ai-datacenter-map/. _site/tools/ai-datacenter-map/
           
           echo "===== Final structure ====="
           find _site/ -type f
