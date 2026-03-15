@@ -42,12 +42,16 @@ jobs:
       - name: Create deployment structure
         run: |
           mkdir -p _site/tools/data-matcher
+          mkdir -p _site/tools/med-equipment-map
           
           echo "Copying landing page..."
           cp landing.html _site/index.html
           
-          echo "Copying React app..."
+          echo "Copying React app (Data Matcher)..."
           cp -r dist/. _site/tools/data-matcher/
+          
+          echo "Copying Medical Equipment Map..."
+          cp tools/med-equipment-map/index.html _site/tools/med-equipment-map/index.html
           
           echo "===== Final structure ====="
           find _site/ -type f
