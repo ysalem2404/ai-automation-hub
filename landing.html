@@ -87,7 +87,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
                 <div class="fade-in">
-                    <div class="text-4xl font-bold text-purple-600 mb-2">1+</div>
+                    <div class="text-4xl font-bold text-purple-600 mb-2">2+</div>
                     <div class="text-gray-600">Active Tools</div>
                 </div>
                 <div class="fade-in" style="animation-delay: 0.1s;">
@@ -95,7 +95,7 @@
                     <div class="text-gray-600">Browser-Based</div>
                 </div>
                 <div class="fade-in" style="animation-delay: 0.2s;">
-                    <div class="text-4xl font-bold text-purple-600 mb-2">5+</div>
+                    <div class="text-4xl font-bold text-purple-600 mb-2">4+</div>
                     <div class="text-gray-600">Tools Coming Soon</div>
                 </div>
                 <div class="fade-in" style="animation-delay: 0.3s;">
@@ -139,26 +139,25 @@
                     </div>
                 </div>
 
-                <!-- PDF Processor - Coming Soon -->
-                <div class="tool-card bg-white rounded-xl shadow-lg overflow-hidden relative opacity-90">
-                    <span class="coming-soon-badge">Coming Soon</span>
+                <!-- Medical Equipment Map - Active (replaces PDF Processor) -->
+                <div class="tool-card bg-white rounded-xl shadow-lg overflow-hidden">
                     <div class="p-8">
-                        <div class="w-16 h-16 bg-gradient-to-br from-red-400 to-pink-500 rounded-lg flex items-center justify-center mb-6">
-                            <i class="fas fa-file-pdf text-3xl text-white"></i>
+                        <div class="w-16 h-16 bg-gradient-to-br from-teal-400 to-blue-600 rounded-lg flex items-center justify-center mb-6">
+                            <i class="fas fa-map-marked-alt text-3xl text-white"></i>
                         </div>
-                        <h3 class="text-2xl font-bold text-gray-800 mb-3">PDF Processor</h3>
+                        <h3 class="text-2xl font-bold text-gray-800 mb-3">Med Equipment Map</h3>
                         <p class="text-gray-600 mb-6">
-                            Extract, merge, split, and convert PDF files. Batch process multiple documents with 
-                            OCR capabilities and intelligent text extraction.
+                            Interactive US heatmap of medical equipment spending by state. Explore buyer entities, 
+                            equipment pricing, top suppliers, and a step-by-step guide to becoming a supplier.
                         </p>
                         <div class="flex flex-wrap gap-2 mb-6">
-                            <span class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm">Planned</span>
-                            <span class="px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm">PDF</span>
-                            <span class="px-3 py-1 bg-pink-100 text-pink-700 rounded-full text-sm">OCR</span>
+                            <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm">Active</span>
+                            <span class="px-3 py-1 bg-teal-100 text-teal-700 rounded-full text-sm">Healthcare</span>
+                            <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm">D3.js Map</span>
                         </div>
-                        <button disabled class="block w-full bg-gray-300 text-gray-500 text-center py-3 rounded-lg font-semibold cursor-not-allowed">
-                            <i class="fas fa-clock mr-2"></i>In Development
-                        </button>
+                        <a href="./tools/med-equipment-map/" class="block w-full bg-gradient-to-r from-teal-400 to-blue-600 text-white text-center py-3 rounded-lg font-semibold hover:from-teal-500 hover:to-blue-700 transition">
+                            <i class="fas fa-rocket mr-2"></i>Launch Tool
+                        </a>
                     </div>
                 </div>
 
@@ -357,7 +356,7 @@
                 </div>
             </div>
             <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
-                <p>&copy; 2024 AI & Automation Hub. All rights reserved. Built with ❤️ for data professionals.</p>
+                <p>&copy; 2024 AI & Automation Hub. All rights reserved. Built with &#10084;&#65039; for data professionals.</p>
             </div>
         </div>
     </footer>
@@ -394,4 +393,3 @@
     </script>
 </body>
 </html>
-
