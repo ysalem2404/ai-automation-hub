@@ -1,1308 +1,656 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
+<!--
+   ______                            __
+  / ____/___  ____ ___  ____  __  __/ /____  _____
+ / /   / __ \/ __ `__ \/ __ \/ / / / __/ _ \/ ___/
+/ /___/ /_/ / / / / / / /_/ / /_/ / /_/  __/ /
+\____/\____/_/ /_/ /_/ .___/\__,_/\__/\___/_/
+                    /_/
+        Created with Perplexity Computer
+        https://www.perplexity.ai/computer
+-->
+<meta name="generator" content="Perplexity Computer">
+<meta name="author" content="Perplexity Computer">
+<meta property="og:see_also" content="https://www.perplexity.ai/computer">
+<link rel="author" href="https://www.perplexity.ai/computer">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>US Medical Equipment Market Map & Supplier Guide</title>
-<script src="https://cdn.tailwindcss.com"></script>
+<title>US Medical Equipment Market Heatmap</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./base.css">
+<link rel="stylesheet" href="./style.css">
 <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
 <script src="https://cdn.jsdelivr.net/npm/topojson-client@3"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<script>
-tailwind.config = {
-  darkMode: 'class',
-  theme: {
-    extend: {
-      colors: {
-        med: {
-          50: '#eef7fb',
-          100: '#d5ecf5',
-          200: '#b0dbed',
-          300: '#79c3df',
-          400: '#3fa5ca',
-          500: '#2589af',
-          600: '#1e6e94',
-          700: '#1d5a79',
-          800: '#1d4c64',
-          900: '#1c4055',
-          950: '#122a39',
-        },
-        accent: {
-          DEFAULT: '#0ea5e9',
-          light: '#38bdf8',
-          dark: '#0284c7',
-        }
-      },
-      fontFamily: {
-        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
-        display: ['"DM Sans"', 'system-ui', 'sans-serif'],
-      }
-    }
-  }
-}
-</script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<style>
-  html { font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11'; }
-  body { font-family: 'Inter', system-ui, sans-serif; }
-  .font-display { font-family: 'DM Sans', system-ui, sans-serif; }
-
-  /* Smooth transitions for dark mode */
-  * { transition: background-color 0.3s ease, color 0.2s ease, border-color 0.3s ease, box-shadow 0.3s ease; }
-
-  /* Custom scrollbar */
-  ::-webkit-scrollbar { width: 8px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 4px; }
-  .dark ::-webkit-scrollbar-thumb { background: #475569; }
-
-  /* Map tooltip */
-  .map-tooltip {
-    position: absolute;
-    pointer-events: none;
-    background: rgba(255,255,255,0.97);
-    border: 1px solid #e2e8f0;
-    border-radius: 10px;
-    padding: 14px 18px;
-    font-size: 13px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.15);
-    z-index: 100;
-    opacity: 0;
-    transition: opacity 0.2s ease;
-    max-width: 280px;
-    backdrop-filter: blur(8px);
-  }
-  .dark .map-tooltip {
-    background: rgba(30,41,59,0.97);
-    border-color: #334155;
-    color: #e2e8f0;
-  }
-
-  /* State hover */
-  .state-path { cursor: pointer; stroke: #fff; stroke-width: 0.7; transition: opacity 0.15s ease; }
-  .dark .state-path { stroke: #1e293b; }
-  .state-path:hover { opacity: 0.8; stroke-width: 1.5; }
-
-  /* Badge styles */
-  .badge-gold { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #78350f; }
-  .badge-silver { background: linear-gradient(135deg, #cbd5e1, #94a3b8); color: #1e293b; }
-  .badge-bronze { background: linear-gradient(135deg, #d97706, #b45309); color: #fff; }
-
-  /* Step card */
-  .step-card { position: relative; }
-  .step-card::before {
-    content: '';
-    position: absolute;
-    left: 28px;
-    top: 60px;
-    bottom: -20px;
-    width: 2px;
-    background: linear-gradient(to bottom, #0ea5e9, transparent);
-  }
-  .step-card:last-child::before { display: none; }
-
-  /* Animate on scroll */
-  .fade-in { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
-  .fade-in.visible { opacity: 1; transform: translateY(0); }
-
-  /* KPI card hover */
-  .kpi-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
-  .kpi-card:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,0.12); }
-
-  /* Table row hover */
-  .table-row-hover:hover { background-color: rgba(14,165,233,0.06); }
-  .dark .table-row-hover:hover { background-color: rgba(14,165,233,0.1); }
-
-  /* Sticky nav shadow */
-  .nav-scrolled { box-shadow: 0 1px 12px rgba(0,0,0,0.08); }
-  .dark .nav-scrolled { box-shadow: 0 1px 12px rgba(0,0,0,0.3); }
-
-  /* Sortable table header */
-  .sortable { cursor: pointer; user-select: none; }
-  .sortable:hover { color: #0ea5e9; }
-
-  /* Pricing bar */
-  .price-bar { transition: width 0.8s cubic-bezier(0.4,0,0.2,1); }
-
-  /* Map container aspect ratio */
-  #map-container { position: relative; width: 100%; }
-  #map-container svg { width: 100%; height: auto; }
-
-  /* Loading skeleton */
-  @keyframes shimmer {
-    0% { background-position: -200% 0; }
-    100% { background-position: 200% 0; }
-  }
-  .skeleton {
-    background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
-    background-size: 200% 100%;
-    animation: shimmer 1.5s infinite;
-    border-radius: 8px;
-  }
-  .dark .skeleton {
-    background: linear-gradient(90deg, #334155 25%, #475569 50%, #334155 75%);
-    background-size: 200% 100%;
-  }
-</style>
 </head>
-<body class="bg-gray-50 text-gray-900 dark:bg-slate-950 dark:text-gray-100 antialiased">
-
-<!-- Navigation -->
-<nav id="navbar" class="fixed top-0 left-0 right-0 z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-gray-200 dark:border-slate-800">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex items-center justify-between h-16">
-      <div class="flex items-center gap-3">
-        <a href="../../" class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 hover:text-accent transition-colors">
-          <i class="fas fa-arrow-left text-xs"></i>
-          <span class="hidden sm:inline">Back to Hub</span>
-        </a>
-        <span class="text-gray-300 dark:text-slate-600">|</span>
-        <div class="flex items-center gap-2">
-          <svg class="w-6 h-6 text-accent" viewBox="0 0 32 32" fill="none" aria-label="Medical Equipment Map Logo">
-            <rect x="2" y="2" width="28" height="28" rx="6" stroke="currentColor" stroke-width="2"/>
-            <path d="M16 8v16M8 16h16" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
-            <circle cx="16" cy="16" r="4" stroke="currentColor" stroke-width="1.5" fill="currentColor" opacity="0.15"/>
-          </svg>
-          <span class="font-display font-bold text-sm sm:text-base text-gray-900 dark:text-white">Med Equipment Map</span>
-        </div>
-      </div>
-      <div class="hidden lg:flex items-center gap-6 text-sm font-medium">
-        <a href="#map" class="text-gray-600 dark:text-gray-300 hover:text-accent dark:hover:text-accent transition-colors">Map</a>
-        <a href="#rankings" class="text-gray-600 dark:text-gray-300 hover:text-accent dark:hover:text-accent transition-colors">Rankings</a>
-        <a href="#buyers" class="text-gray-600 dark:text-gray-300 hover:text-accent dark:hover:text-accent transition-colors">Buyers</a>
-        <a href="#pricing" class="text-gray-600 dark:text-gray-300 hover:text-accent dark:hover:text-accent transition-colors">Pricing</a>
-        <a href="#suppliers" class="text-gray-600 dark:text-gray-300 hover:text-accent dark:hover:text-accent transition-colors">Suppliers</a>
-        <a href="#guide" class="text-gray-600 dark:text-gray-300 hover:text-accent dark:hover:text-accent transition-colors">Guide</a>
-      </div>
-      <div class="flex items-center gap-3">
-        <button id="theme-toggle" class="p-2 rounded-lg bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 transition-colors" aria-label="Toggle dark mode">
-          <i class="fas fa-moon text-gray-600 dark:hidden"></i>
-          <i class="fas fa-sun text-yellow-400 hidden dark:inline"></i>
-        </button>
-        <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-lg bg-gray-100 dark:bg-slate-800">
-          <i class="fas fa-bars text-gray-600 dark:text-gray-300"></i>
-        </button>
-      </div>
+<body>
+<div class="dashboard">
+  <!-- HEADER -->
+  <header class="dashboard-header">
+    <h1>
+      <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
+        <rect x="2" y="2" width="28" height="28" rx="6" stroke="currentColor" stroke-width="2"/>
+        <path d="M16 8v16M8 16h16" stroke="var(--color-primary)" stroke-width="2.5" stroke-linecap="round"/>
+        <circle cx="16" cy="16" r="4" stroke="var(--color-primary)" stroke-width="1.5" fill="none"/>
+      </svg>
+      US Medical Equipment Market
+    </h1>
+    <div class="header-controls">
+      <span style="font-size:var(--text-xs);color:var(--color-text-faint);">Data: 2024-2025</span>
+      <button class="theme-toggle" data-theme-toggle aria-label="Toggle theme">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
     </div>
-  </div>
-  <!-- Mobile menu -->
-  <div id="mobile-menu" class="hidden lg:hidden border-t border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-3">
-    <div class="flex flex-col gap-2 text-sm font-medium">
-      <a href="#map" class="py-2 text-gray-600 dark:text-gray-300 hover:text-accent">Map</a>
-      <a href="#rankings" class="py-2 text-gray-600 dark:text-gray-300 hover:text-accent">Rankings</a>
-      <a href="#buyers" class="py-2 text-gray-600 dark:text-gray-300 hover:text-accent">Buyers</a>
-      <a href="#pricing" class="py-2 text-gray-600 dark:text-gray-300 hover:text-accent">Pricing</a>
-      <a href="#suppliers" class="py-2 text-gray-600 dark:text-gray-300 hover:text-accent">Suppliers</a>
-      <a href="#guide" class="py-2 text-gray-600 dark:text-gray-300 hover:text-accent">Guide</a>
-    </div>
-  </div>
-</nav>
+  </header>
 
-<!-- Hero Section -->
-<header class="pt-24 pb-12 sm:pt-28 sm:pb-16 bg-gradient-to-br from-med-950 via-med-900 to-med-800 text-white relative overflow-hidden">
-  <div class="absolute inset-0 opacity-10">
-    <svg width="100%" height="100%"><defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" stroke-width="0.5"/></pattern></defs><rect width="100%" height="100%" fill="url(#grid)"/></svg>
-  </div>
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-    <div class="max-w-3xl">
-      <div class="flex items-center gap-2 mb-4">
-        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-accent/20 text-accent-light text-xs font-semibold tracking-wide uppercase">
-          <i class="fas fa-chart-line text-[10px]"></i> 2025 Market Data
-        </span>
-      </div>
-      <h1 class="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-tight mb-4">
-        US Medical Equipment<br>Market Map & Supplier Guide
-      </h1>
-      <p class="text-med-200 text-base sm:text-lg leading-relaxed max-w-2xl mb-8">
-        Interactive dashboard mapping $156B+ in annual US medical equipment spending across all 50 states. Explore buyer segments, pricing benchmarks, top suppliers, and a step-by-step guide to becoming a certified supplier.
-      </p>
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div class="kpi-card bg-white/10 rounded-xl p-4 backdrop-blur-sm border border-white/10">
-          <div class="text-2xl sm:text-3xl font-bold font-display">$156B+</div>
-          <div class="text-med-300 text-xs mt-1">Annual Market Size</div>
+  <!-- TAB NAV -->
+  <div class="main-content">
+    <nav class="tab-nav" role="tablist">
+      <button class="tab-btn active" role="tab" data-tab="heatmap">Heatmap by State</button>
+      <button class="tab-btn" role="tab" data-tab="buyers">Buyer Entities</button>
+      <button class="tab-btn" role="tab" data-tab="equipment">Equipment Categories</button>
+      <button class="tab-btn" role="tab" data-tab="sourcing">Sourcing &amp; Suppliers</button>
+      <button class="tab-btn" role="tab" data-tab="guide">Become a Supplier</button>
+    </nav>
+
+    <!-- ======== TAB 1: HEATMAP ======== -->
+    <div class="tab-content active" id="tab-heatmap">
+      <!-- KPIs -->
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-label">US Med Device Market</div>
+          <div class="kpi-value">$70.7B</div>
+          <div class="kpi-delta up">+5.5% CAGR to 2033</div>
         </div>
-        <div class="kpi-card bg-white/10 rounded-xl p-4 backdrop-blur-sm border border-white/10">
-          <div class="text-2xl sm:text-3xl font-bold font-display">6,100+</div>
-          <div class="text-med-300 text-xs mt-1">US Hospitals</div>
+        <div class="kpi-card">
+          <div class="kpi-label">Hospital Supply Spend</div>
+          <div class="kpi-value">$57B</div>
+          <div class="kpi-delta up">+8.2% avg annual growth</div>
         </div>
-        <div class="kpi-card bg-white/10 rounded-xl p-4 backdrop-blur-sm border border-white/10">
-          <div class="text-2xl sm:text-3xl font-bold font-display">72%</div>
-          <div class="text-med-300 text-xs mt-1">Through GPOs</div>
+        <div class="kpi-card">
+          <div class="kpi-label">Total NHE (2024)</div>
+          <div class="kpi-value">$5.3T</div>
+          <div class="kpi-delta up">+7.2% YoY</div>
         </div>
-        <div class="kpi-card bg-white/10 rounded-xl p-4 backdrop-blur-sm border border-white/10">
-          <div class="text-2xl sm:text-3xl font-bold font-display">50</div>
-          <div class="text-med-300 text-xs mt-1">States + DC</div>
+        <div class="kpi-card">
+          <div class="kpi-label">Home Med Equipment</div>
+          <div class="kpi-value">$44.3B</div>
+          <div class="kpi-delta up">+15.1% CAGR to 2035</div>
         </div>
       </div>
-    </div>
-  </div>
-</header>
 
-<!-- Section 1: Interactive Map -->
-<section id="map" class="py-12 sm:py-16">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="fade-in">
-      <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8">
-        <div>
-          <h2 class="font-display text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
-            <i class="fas fa-map-marked-alt text-accent mr-2"></i>Equipment Spend by State
-          </h2>
-          <p class="text-gray-500 dark:text-gray-400 mt-1 text-sm">Hover or tap any state for details. Switch metrics with the dropdown.</p>
-        </div>
-        <div class="flex items-center gap-3">
-          <label for="metric-select" class="text-sm font-medium text-gray-600 dark:text-gray-400">Metric:</label>
-          <select id="metric-select" class="px-3 py-2 rounded-lg bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-sm font-medium focus:ring-2 focus:ring-accent focus:outline-none">
-            <option value="spend">Total Equipment Spend</option>
-            <option value="percapita">Per Capita HC Spend</option>
+      <!-- MAP -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Medical Equipment Spending by State</div>
+            <div class="card-subtitle">Hover over states to see detailed breakdown. Estimated from healthcare expenditure, hospital density, and device industry data.</div>
+          </div>
+          <select class="data-select" id="mapMetric">
+            <option value="totalSpend">Total Equipment Spend ($B)</option>
+            <option value="perCapita">Per Capita HC Spend ($)</option>
             <option value="hospitals">Number of Hospitals</option>
-            <option value="jobs">Med Device Jobs</option>
+            <option value="deviceJobs">Med Device Jobs</option>
           </select>
         </div>
+        <div class="card-body">
+          <div class="map-container" id="mapContainer"></div>
+        </div>
+        <div class="map-legend">
+          <span>Low</span>
+          <div class="legend-bar"></div>
+          <span>High</span>
+          <span style="margin-left:auto;">Click a state for details</span>
+        </div>
       </div>
 
-      <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 p-4 sm:p-6 shadow-sm">
-        <div id="map-container" class="relative">
-          <div id="map-loading" class="flex items-center justify-center py-24">
-            <div class="text-center">
-              <i class="fas fa-spinner fa-spin text-accent text-2xl mb-3"></i>
-              <p class="text-sm text-gray-500 dark:text-gray-400">Loading map data...</p>
-            </div>
-          </div>
+      <!-- TOP STATES TABLE -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Top 15 States by Medical Equipment Market Size</div>
         </div>
-        <!-- Legend -->
-        <div class="flex flex-wrap items-center justify-between mt-4 pt-4 border-t border-gray-100 dark:border-slate-800">
-          <div class="flex items-center gap-2">
-            <span class="text-xs text-gray-500 dark:text-gray-400">Low</span>
-            <div id="map-legend" class="flex h-3 rounded-full overflow-hidden w-40"></div>
-            <span class="text-xs text-gray-500 dark:text-gray-400">High</span>
-          </div>
-          <p class="text-xs text-gray-400 dark:text-gray-500 mt-2 sm:mt-0">Sources: AHA, CMS, Proclinical, industry estimates</p>
+        <div class="card-body" style="padding:0;overflow-x:auto;">
+          <table class="data-table" id="statesTable">
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>State</th>
+                <th>Est. Med Equip Spend</th>
+                <th>HC Spend per Capita</th>
+                <th>Hospitals</th>
+                <th>Top Buyer</th>
+                <th>Top Equipment</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
         </div>
       </div>
     </div>
-    <div class="map-tooltip" id="tooltip"></div>
-  </div>
-</section>
 
-<!-- Section 2: Rankings Table -->
-<section id="rankings" class="py-12 sm:py-16 bg-white dark:bg-slate-900">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="fade-in">
-      <h2 class="font-display text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2">
-        <i class="fas fa-trophy text-accent mr-2"></i>Top 15 States by Equipment Spend
-      </h2>
-      <p class="text-gray-500 dark:text-gray-400 text-sm mb-8">Click column headers to sort. Top 3 states highlighted.</p>
-      <div class="overflow-x-auto rounded-xl border border-gray-200 dark:border-slate-800">
-        <table class="w-full text-sm" id="rankings-table">
-          <thead>
-            <tr class="bg-gray-50 dark:bg-slate-800/80">
-              <th class="sortable px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-300" data-col="rank">Rank <i class="fas fa-sort text-gray-300 dark:text-gray-600 ml-1 text-xs"></i></th>
-              <th class="sortable px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-300" data-col="state">State <i class="fas fa-sort text-gray-300 dark:text-gray-600 ml-1 text-xs"></i></th>
-              <th class="sortable px-4 py-3 text-right font-semibold text-gray-600 dark:text-gray-300" data-col="spend">Est. Equipment Spend <i class="fas fa-sort text-gray-300 dark:text-gray-600 ml-1 text-xs"></i></th>
-              <th class="sortable px-4 py-3 text-right font-semibold text-gray-600 dark:text-gray-300" data-col="hospitals">Hospitals <i class="fas fa-sort text-gray-300 dark:text-gray-600 ml-1 text-xs"></i></th>
-              <th class="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-300">Top Category</th>
-              <th class="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-300">Top Buyer</th>
-            </tr>
-          </thead>
-          <tbody id="rankings-body"></tbody>
-        </table>
+    <!-- ======== TAB 2: BUYERS ======== -->
+    <div class="tab-content" id="tab-buyers">
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-label">Hospital Share</div>
+          <div class="kpi-value">62%</div>
+          <div class="kpi-delta">Of total med equip purchases</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">ASC / Clinics Share</div>
+          <div class="kpi-value">18%</div>
+          <div class="kpi-delta up">Fastest growing segment</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Private Practice</div>
+          <div class="kpi-value">12%</div>
+          <div class="kpi-delta">Physician offices & solo practice</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Other (Gov, Research)</div>
+          <div class="kpi-value">8%</div>
+          <div class="kpi-delta">VA, DoD, Universities</div>
+        </div>
       </div>
-    </div>
-  </div>
-</section>
 
-<!-- Section 3: Buyer Breakdown -->
-<section id="buyers" class="py-12 sm:py-16">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="fade-in">
-      <h2 class="font-display text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2">
-        <i class="fas fa-users text-accent mr-2"></i>Buyer Entity Breakdown
-      </h2>
-      <p class="text-gray-500 dark:text-gray-400 text-sm mb-8">How medical equipment purchasing is distributed across buyer types and departments.</p>
-
-      <div class="grid lg:grid-cols-2 gap-6 mb-8">
-        <!-- Donut Chart: Purchase Distribution -->
-        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 p-6 shadow-sm">
-          <h3 class="font-display font-bold text-lg mb-1 text-gray-900 dark:text-white">Purchase Distribution by Entity</h3>
-          <p class="text-xs text-gray-500 dark:text-gray-400 mb-4">Share of total medical equipment purchases</p>
-          <div class="flex items-center justify-center">
-            <div style="position:relative; width:280px; height:280px;">
+      <div class="chart-row">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Market Share by Buyer Entity</div>
+          </div>
+          <div class="card-body">
+            <div class="chart-container">
               <canvas id="buyerDonut"></canvas>
             </div>
           </div>
         </div>
-
-        <!-- Bar Chart: By Department -->
-        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 p-6 shadow-sm">
-          <h3 class="font-display font-bold text-lg mb-1 text-gray-900 dark:text-white">Spend by Department</h3>
-          <p class="text-xs text-gray-500 dark:text-gray-400 mb-4">Equipment spend allocation within hospitals</p>
-          <div style="position:relative; height:280px;">
-            <canvas id="deptBar"></canvas>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Spending by Hospital Department</div>
+          </div>
+          <div class="card-body">
+            <div class="bar-chart-container" id="deptBars"></div>
           </div>
         </div>
       </div>
 
-      <!-- Comparison Table -->
-      <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-sm overflow-x-auto">
-        <div class="p-6 pb-3">
-          <h3 class="font-display font-bold text-lg text-gray-900 dark:text-white">Entity Comparison</h3>
-          <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Key characteristics by buyer type</p>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Buyer Entity Comparison</div>
         </div>
-        <table class="w-full text-sm">
-          <thead>
-            <tr class="border-t border-gray-100 dark:border-slate-800 bg-gray-50 dark:bg-slate-800/50">
-              <th class="px-6 py-3 text-left font-semibold text-gray-600 dark:text-gray-300">Entity Type</th>
-              <th class="px-6 py-3 text-left font-semibold text-gray-600 dark:text-gray-300">Avg Budget Range</th>
-              <th class="px-6 py-3 text-left font-semibold text-gray-600 dark:text-gray-300">Key Equipment</th>
-              <th class="px-6 py-3 text-left font-semibold text-gray-600 dark:text-gray-300">Purchase Method</th>
-              <th class="px-6 py-3 text-left font-semibold text-gray-600 dark:text-gray-300">Decision Makers</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-gray-100 dark:divide-slate-800">
-            <tr class="table-row-hover">
-              <td class="px-6 py-4 font-medium"><i class="fas fa-hospital text-accent mr-2"></i>Hospitals</td>
-              <td class="px-6 py-4 text-gray-600 dark:text-gray-400">$5M – $50M+/yr</td>
-              <td class="px-6 py-4 text-gray-600 dark:text-gray-400">MRI, CT, Surgical Robots, Monitors</td>
-              <td class="px-6 py-4 text-gray-600 dark:text-gray-400">GPO Contracts, RFPs</td>
-              <td class="px-6 py-4 text-gray-600 dark:text-gray-400">CFO, Supply Chain VP, Dept Heads</td>
-            </tr>
-            <tr class="table-row-hover">
-              <td class="px-6 py-4 font-medium"><i class="fas fa-clinic-medical text-teal-500 mr-2"></i>ASCs / Clinics</td>
-              <td class="px-6 py-4 text-gray-600 dark:text-gray-400">$500K – $5M/yr</td>
-              <td class="px-6 py-4 text-gray-600 dark:text-gray-400">Endoscopy, Anesthesia, Sterilizers</td>
-              <td class="px-6 py-4 text-gray-600 dark:text-gray-400">GPO + Direct Purchase</td>
-              <td class="px-6 py-4 text-gray-600 dark:text-gray-400">Administrator, Medical Director</td>
-            </tr>
-            <tr class="table-row-hover">
-              <td class="px-6 py-4 font-medium"><i class="fas fa-user-md text-indigo-500 mr-2"></i>Private Practice</td>
-              <td class="px-6 py-4 text-gray-600 dark:text-gray-400">$50K – $500K/yr</td>
-              <td class="px-6 py-4 text-gray-600 dark:text-gray-400">Exam Tables, Ultrasound, EKG</td>
-              <td class="px-6 py-4 text-gray-600 dark:text-gray-400">Direct Purchase, Leasing</td>
-              <td class="px-6 py-4 text-gray-600 dark:text-gray-400">Physician Owner, Office Manager</td>
-            </tr>
-            <tr class="table-row-hover">
-              <td class="px-6 py-4 font-medium"><i class="fas fa-landmark text-amber-500 mr-2"></i>Government / Research</td>
-              <td class="px-6 py-4 text-gray-600 dark:text-gray-400">$10M – $100M+/yr</td>
-              <td class="px-6 py-4 text-gray-600 dark:text-gray-400">Imaging, Lab Systems, Research Eq.</td>
-              <td class="px-6 py-4 text-gray-600 dark:text-gray-400">Federal Procurement, GSA Schedule</td>
-              <td class="px-6 py-4 text-gray-600 dark:text-gray-400">Contracting Officers, PIs</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Section 4: Equipment Pricing -->
-<section id="pricing" class="py-12 sm:py-16 bg-white dark:bg-slate-900">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="fade-in">
-      <h2 class="font-display text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2">
-        <i class="fas fa-tags text-accent mr-2"></i>Equipment Pricing Guide
-      </h2>
-      <p class="text-gray-500 dark:text-gray-400 text-sm mb-8">Estimated price ranges for major medical equipment categories. Spot purchases average +43.7% premium over contract pricing.</p>
-
-      <div class="grid lg:grid-cols-3 gap-6 mb-8">
-        <div class="lg:col-span-2">
-          <div class="bg-gray-50 dark:bg-slate-800/50 rounded-2xl border border-gray-200 dark:border-slate-700 overflow-x-auto">
-            <table class="w-full text-sm" id="pricing-table">
-              <thead>
-                <tr class="border-b border-gray-200 dark:border-slate-700">
-                  <th class="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-300">Equipment Category</th>
-                  <th class="px-4 py-3 text-right font-semibold text-gray-600 dark:text-gray-300">Contract Price</th>
-                  <th class="px-4 py-3 text-right font-semibold text-gray-600 dark:text-gray-300">Spot Price</th>
-                  <th class="px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-300 hidden sm:table-cell">Range</th>
-                </tr>
-              </thead>
-              <tbody id="pricing-body" class="divide-y divide-gray-100 dark:divide-slate-700/50"></tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- Contract vs Spot Comparison -->
-        <div class="bg-white dark:bg-slate-800 rounded-2xl border border-gray-200 dark:border-slate-700 p-6 shadow-sm">
-          <h3 class="font-display font-bold text-lg mb-1 text-gray-900 dark:text-white">Contract vs Spot</h3>
-          <p class="text-xs text-gray-500 dark:text-gray-400 mb-4">Average price differential by category</p>
-          <div style="position:relative; height:320px;">
-            <canvas id="pricingChart"></canvas>
-          </div>
-          <div class="mt-4 p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-800/40">
-            <p class="text-xs text-amber-800 dark:text-amber-300"><i class="fas fa-exclamation-triangle mr-1"></i> Spot purchases average <strong>+43.7%</strong> premium over GPO contract pricing. Long-term contracts recommended for high-value equipment.</p>
-          </div>
+        <div class="card-body" style="padding:0;overflow-x:auto;">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Entity Type</th>
+                <th>Share</th>
+                <th>Avg Annual Budget</th>
+                <th>Key Equipment</th>
+                <th>Purchase Method</th>
+                <th>Decision Maker</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="badge badge-blue">Hospitals</span></td>
+                <td>62%</td>
+                <td>$6.7M per facility</td>
+                <td>Imaging, Surgical, Monitoring</td>
+                <td>GPO contracts, RFP</td>
+                <td>Value Analysis Committee</td>
+              </tr>
+              <tr>
+                <td><span class="badge badge-green">ASC / Clinics</span></td>
+                <td>18%</td>
+                <td>$1.2M per center</td>
+                <td>Surgical instruments, Sterilization</td>
+                <td>GPO + Direct manufacturer</td>
+                <td>Physician-owners, Admin</td>
+              </tr>
+              <tr>
+                <td><span class="badge badge-orange">Private Practice</span></td>
+                <td>12%</td>
+                <td>$150K-400K per office</td>
+                <td>Diagnostic, Exam, EHR hardware</td>
+                <td>Direct purchase, Distributors</td>
+                <td>Physician / Office Manager</td>
+              </tr>
+              <tr>
+                <td><span class="badge badge-purple">Gov & Research</span></td>
+                <td>8%</td>
+                <td>Varies widely</td>
+                <td>Lab, Imaging, Specialized research</td>
+                <td>Federal procurement (SAM.gov)</td>
+                <td>Procurement officers</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
-  </div>
-</section>
 
-<!-- Section 5: Suppliers & Distributors -->
-<section id="suppliers" class="py-12 sm:py-16">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="fade-in">
-      <h2 class="font-display text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2">
-        <i class="fas fa-industry text-accent mr-2"></i>Major Suppliers & Distributors
-      </h2>
-      <p class="text-gray-500 dark:text-gray-400 text-sm mb-8">Top global manufacturers, distributors, and Group Purchasing Organizations (GPOs).</p>
-
-      <!-- KPI row -->
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
-        <div class="kpi-card bg-white dark:bg-slate-900 rounded-xl border border-gray-200 dark:border-slate-800 p-4 shadow-sm">
-          <div class="text-xs text-gray-500 dark:text-gray-400 mb-1">Top Manufacturer</div>
-          <div class="font-display font-bold text-lg text-gray-900 dark:text-white">Medtronic</div>
-          <div class="text-accent font-semibold text-sm">$34.8B</div>
+    <!-- ======== TAB 3: EQUIPMENT ======== -->
+    <div class="tab-content" id="tab-equipment">
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-label">Surgical & OR</div>
+          <div class="kpi-value">42.3%</div>
+          <div class="kpi-delta">Of hospital supply budget</div>
         </div>
-        <div class="kpi-card bg-white dark:bg-slate-900 rounded-xl border border-gray-200 dark:border-slate-800 p-4 shadow-sm">
-          <div class="text-xs text-gray-500 dark:text-gray-400 mb-1">Top Distributor</div>
-          <div class="font-display font-bold text-lg text-gray-900 dark:text-white">McKesson</div>
-          <div class="text-accent font-semibold text-sm">$276B rev</div>
+        <div class="kpi-card">
+          <div class="kpi-label">ICU / Critical Care</div>
+          <div class="kpi-value">19.2%</div>
+          <div class="kpi-delta">$25,860 per bed annually</div>
         </div>
-        <div class="kpi-card bg-white dark:bg-slate-900 rounded-xl border border-gray-200 dark:border-slate-800 p-4 shadow-sm">
-          <div class="text-xs text-gray-500 dark:text-gray-400 mb-1">GPO Coverage</div>
-          <div class="font-display font-bold text-lg text-gray-900 dark:text-white">72%</div>
-          <div class="text-accent font-semibold text-sm">of hospital spend</div>
+        <div class="kpi-card">
+          <div class="kpi-label">Diagnostic Imaging</div>
+          <div class="kpi-value">$1.4B</div>
+          <div class="kpi-delta up">+8% from 2023</div>
         </div>
-        <div class="kpi-card bg-white dark:bg-slate-900 rounded-xl border border-gray-200 dark:border-slate-800 p-4 shadow-sm">
-          <div class="text-xs text-gray-500 dark:text-gray-400 mb-1">Manufacturers Tracked</div>
-          <div class="font-display font-bold text-lg text-gray-900 dark:text-white">10</div>
-          <div class="text-accent font-semibold text-sm">$200B+ combined</div>
+        <div class="kpi-card">
+          <div class="kpi-label">Surgical Instruments</div>
+          <div class="kpi-value">$10B+</div>
+          <div class="kpi-delta up">+7% from 2023</div>
         </div>
       </div>
 
-      <div class="grid lg:grid-cols-2 gap-6">
-        <!-- Top 10 Manufacturers -->
-        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-sm overflow-hidden">
-          <div class="p-6 pb-3">
-            <h3 class="font-display font-bold text-lg text-gray-900 dark:text-white"><i class="fas fa-building text-accent mr-2"></i>Top 10 Global Manufacturers</h3>
-            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Ranked by medical device/equipment revenue</p>
+      <div class="chart-row">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Most Purchased Equipment Categories</div>
           </div>
-          <div class="overflow-x-auto">
-            <table class="w-full text-sm">
-              <thead>
-                <tr class="border-t border-b border-gray-100 dark:border-slate-800 bg-gray-50 dark:bg-slate-800/50">
-                  <th class="px-6 py-2.5 text-left font-semibold text-gray-600 dark:text-gray-300">#</th>
-                  <th class="px-6 py-2.5 text-left font-semibold text-gray-600 dark:text-gray-300">Company</th>
-                  <th class="px-6 py-2.5 text-right font-semibold text-gray-600 dark:text-gray-300">Revenue</th>
-                  <th class="px-6 py-2.5 text-left font-semibold text-gray-600 dark:text-gray-300">Specialty</th>
-                </tr>
-              </thead>
-              <tbody id="manufacturers-body" class="divide-y divide-gray-100 dark:divide-slate-800"></tbody>
-            </table>
+          <div class="card-body">
+            <div class="chart-container">
+              <canvas id="equipDonut"></canvas>
+            </div>
           </div>
         </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Capital Equipment Cost Ranges</div>
+          </div>
+          <div class="card-body">
+            <div class="bar-chart-container" id="costBars"></div>
+          </div>
+        </div>
+      </div>
 
-        <!-- Distributors & GPOs -->
-        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-sm overflow-hidden">
-          <div class="p-6 pb-3">
-            <h3 class="font-display font-bold text-lg text-gray-900 dark:text-white"><i class="fas fa-truck text-teal-500 mr-2"></i>Distributors & GPOs</h3>
-            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">72% of hospital purchasing flows through GPOs</p>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Top Equipment Categories by Volume and Cost</div>
+        </div>
+        <div class="card-body" style="padding:0;overflow-x:auto;">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Category</th>
+                <th>Examples</th>
+                <th>Price Range</th>
+                <th>Primary Buyers</th>
+                <th>Contract vs Spot Premium</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Surgical Instruments</td>
+                <td>Robotic systems, Endoscopes, Sutures</td>
+                <td>$127 - $4.9M</td>
+                <td>Hospitals, ASCs</td>
+                <td>+48-50%</td>
+              </tr>
+              <tr>
+                <td>Diagnostic Imaging</td>
+                <td>MRI, CT, X-Ray, Ultrasound</td>
+                <td>$50K - $3M</td>
+                <td>Hospitals, Large clinics</td>
+                <td>+30-40%</td>
+              </tr>
+              <tr>
+                <td>Patient Monitoring</td>
+                <td>Vital signs, Telemetry, ICU monitors</td>
+                <td>$5K - $50K</td>
+                <td>Hospitals, ASCs</td>
+                <td>+35%</td>
+              </tr>
+              <tr>
+                <td>Cardiovascular Devices</td>
+                <td>Stents, Pacemakers, ECMO, Bypass</td>
+                <td>$8,950 - $325K</td>
+                <td>Hospitals</td>
+                <td>+38.9%</td>
+              </tr>
+              <tr>
+                <td>Orthopedic Implants</td>
+                <td>Joint replacements, Spine fixation</td>
+                <td>$2K - $30K per implant</td>
+                <td>Hospitals, ASCs</td>
+                <td>+25-40%</td>
+              </tr>
+              <tr>
+                <td>Respiratory / Ventilators</td>
+                <td>Ventilators, CPAP, BiPAP</td>
+                <td>$5K - $50K</td>
+                <td>Hospitals, Home health</td>
+                <td>+30%</td>
+              </tr>
+              <tr>
+                <td>Lab & Diagnostic</td>
+                <td>Analyzers, Centrifuges, Microscopes</td>
+                <td>$10K - $500K</td>
+                <td>Hospitals, Labs</td>
+                <td>+25%</td>
+              </tr>
+              <tr>
+                <td>Exam & Office</td>
+                <td>Exam tables, Otoscopes, Scales</td>
+                <td>$500 - $10K</td>
+                <td>Private practice, Clinics</td>
+                <td>+20%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======== TAB 4: SOURCING ======== -->
+    <div class="tab-content" id="tab-sourcing">
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-label">Top Manufacturer</div>
+          <div class="kpi-value" style="font-size:var(--text-lg);">Medtronic</div>
+          <div class="kpi-delta">$34.8B revenue</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Largest Distributor</div>
+          <div class="kpi-value" style="font-size:var(--text-lg);">McKesson</div>
+          <div class="kpi-delta">300K+ products</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Hospital Coverage</div>
+          <div class="kpi-value" style="font-size:var(--text-lg);">Cardinal Health</div>
+          <div class="kpi-delta">~90% of US hospitals</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">GPO Market Share</div>
+          <div class="kpi-value">72%</div>
+          <div class="kpi-delta">Of hospital purchasing via GPOs</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Major Manufacturers (Source of Material)</div>
+          <div class="card-subtitle">Top global medical device companies ranked by 2024 revenue</div>
+        </div>
+        <div class="card-body" style="padding:0;overflow-x:auto;">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Company</th>
+                <th>Revenue</th>
+                <th>HQ</th>
+                <th>Key Products</th>
+                <th>Type</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>1</td><td>Medtronic</td><td>$34.8B</td><td>Dublin, Ireland / Minneapolis</td><td>Cardiac, Diabetes, Neuro, Spine</td><td><span class="badge badge-blue">Manufacturer</span></td></tr>
+              <tr><td>2</td><td>Johnson & Johnson</td><td>$34B</td><td>New Brunswick, NJ</td><td>Surgery, Ortho, Vision</td><td><span class="badge badge-blue">Manufacturer</span></td></tr>
+              <tr><td>3</td><td>Abbott</td><td>$26.9B</td><td>Abbott Park, IL</td><td>Diagnostics, Cardio, Nutrition</td><td><span class="badge badge-blue">Manufacturer</span></td></tr>
+              <tr><td>4</td><td>Siemens Healthineers</td><td>$24B</td><td>Erlangen, Germany</td><td>Imaging, Lab diagnostics</td><td><span class="badge badge-blue">Manufacturer</span></td></tr>
+              <tr><td>5</td><td>GE HealthCare</td><td>$19.6B</td><td>Chicago, IL</td><td>Imaging, Ultrasound, Monitoring</td><td><span class="badge badge-blue">Manufacturer</span></td></tr>
+              <tr><td>6</td><td>Stryker</td><td>$20.5B</td><td>Kalamazoo, MI</td><td>Ortho, Surgical, Neurotech</td><td><span class="badge badge-blue">Manufacturer</span></td></tr>
+              <tr><td>7</td><td>Philips Healthcare</td><td>$18B</td><td>Amsterdam, Netherlands</td><td>Monitoring, Imaging, Respiratory</td><td><span class="badge badge-blue">Manufacturer</span></td></tr>
+              <tr><td>8</td><td>Baxter International</td><td>$14.8B</td><td>Deerfield, IL</td><td>Renal, Surgical, Critical care</td><td><span class="badge badge-blue">Manufacturer</span></td></tr>
+              <tr><td>9</td><td>Becton Dickinson</td><td>$19.4B</td><td>Franklin Lakes, NJ</td><td>Syringes, Catheters, Diagnostics</td><td><span class="badge badge-blue">Manufacturer</span></td></tr>
+              <tr><td>10</td><td>Boston Scientific</td><td>$14.2B</td><td>Marlborough, MA</td><td>Cardio, Endo, Neuromod</td><td><span class="badge badge-blue">Manufacturer</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Major Distributors & GPOs</div>
+          <div class="card-subtitle">How medical equipment reaches buyers</div>
+        </div>
+        <div class="card-body">
+          <div class="source-grid">
+            <div class="source-card">
+              <div class="source-icon" style="background:var(--color-primary-light);">🏭</div>
+              <div class="source-name">McKesson Medical-Surgical</div>
+              <div class="source-type">Distributor</div>
+              <div class="source-desc">Largest US med-surg distributor. 300K+ products. Next-day delivery to 95% of customers. 99.8% order accuracy.</div>
+            </div>
+            <div class="source-card">
+              <div class="source-icon" style="background:rgba(22,163,74,0.1);">🏥</div>
+              <div class="source-name">Cardinal Health</div>
+              <div class="source-type">Distributor</div>
+              <div class="source-desc">Supplies ~90% of US hospitals and 60,000 pharmacies. Over 50 years in the industry.</div>
+            </div>
+            <div class="source-card">
+              <div class="source-icon" style="background:rgba(124,58,237,0.1);">📦</div>
+              <div class="source-name">Medline Industries</div>
+              <div class="source-type">Manufacturer + Distributor</div>
+              <div class="source-desc">Largest privately-held manufacturer and distributor. Specializes in cost-effective solutions.</div>
+            </div>
+            <div class="source-card">
+              <div class="source-icon" style="background:rgba(217,119,6,0.1);">🔗</div>
+              <div class="source-name">Owens & Minor</div>
+              <div class="source-type">Distributor</div>
+              <div class="source-desc">Founded 1882. Global supply chain solutions for healthcare. Affordable quality supplies.</div>
+            </div>
+            <div class="source-card">
+              <div class="source-icon" style="background:var(--color-primary-light);">🤝</div>
+              <div class="source-name">Vizient (GPO)</div>
+              <div class="source-type">Group Purchasing Organization</div>
+              <div class="source-desc">Largest member-driven healthcare GPO. Negotiates contracts on behalf of 60% of US hospitals.</div>
+            </div>
+            <div class="source-card">
+              <div class="source-icon" style="background:rgba(22,163,74,0.1);">🤝</div>
+              <div class="source-name">Premier Inc (GPO)</div>
+              <div class="source-type">Group Purchasing Organization</div>
+              <div class="source-desc">Alliance of 4,400+ hospitals. $80B+ in annual purchasing volume.</div>
+            </div>
+            <div class="source-card">
+              <div class="source-icon" style="background:rgba(124,58,237,0.1);">🤝</div>
+              <div class="source-name">HealthTrust (GPO)</div>
+              <div class="source-type">Group Purchasing Organization</div>
+              <div class="source-desc">HCA Healthcare affiliate. Serves 1,600+ hospitals across committed and non-committed programs.</div>
+            </div>
+            <div class="source-card">
+              <div class="source-icon" style="background:rgba(217,119,6,0.1);">🦷</div>
+              <div class="source-name">Henry Schein</div>
+              <div class="source-type">Distributor (Specialty)</div>
+              <div class="source-desc">Founded 1932. Focused on dental, medical and animal health. Customer-focused distribution to offices.</div>
+            </div>
           </div>
-          <div class="grid gap-3 p-6 pt-3">
-            <div id="distributors-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======== TAB 5: BECOME A SUPPLIER ======== -->
+    <div class="tab-content" id="tab-guide">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">How to Become a Medical Equipment Supplier</div>
+            <div class="card-subtitle">Step-by-step guide to entering the US medical device supply market</div>
           </div>
-          <div class="px-6 pb-6">
-            <div class="p-4 bg-sky-50 dark:bg-sky-900/20 rounded-xl border border-sky-200 dark:border-sky-800/40">
-              <p class="text-xs font-semibold text-sky-800 dark:text-sky-300 mb-1"><i class="fas fa-info-circle mr-1"></i>GPO Membership Note</p>
-              <p class="text-xs text-sky-700 dark:text-sky-400">Group Purchasing Organizations negotiate volume discounts on behalf of member hospitals. Suppliers must apply and be approved to join GPO contract portfolios. Major GPOs include Vizient (~$100B purchasing volume), Premier (~$70B), and HealthTrust (~$50B).</p>
+        </div>
+        <div class="card-body">
+          <div class="steps-timeline">
+            <div class="step-item">
+              <div class="step-number">1</div>
+              <div class="step-title">Business Formation & Licensing</div>
+              <div class="step-desc">Register your business entity (LLC or Corp). Obtain state business licenses and any required state-specific medical equipment dealer licenses. Some states require an "in-state" or "resident" license with extensive applications, proof of insurance, fees, and inspections.</div>
+              <div class="step-details">
+                <ul>
+                  <li>Form LLC/Corporation in your state</li>
+                  <li>Obtain EIN from the IRS</li>
+                  <li>Check state-specific DME dealer license requirements</li>
+                  <li>Obtain general and professional liability insurance</li>
+                  <li>Workers' compensation coverage</li>
+                </ul>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-number">2</div>
+              <div class="step-title">FDA Registration (If Manufacturing/Importing)</div>
+              <div class="step-desc">If you manufacture, repackage, relabel, or import medical devices, you must register annually with the FDA. Distributors who don't modify products are generally exempt. The annual FDA establishment registration fee applies.</div>
+              <div class="step-details">
+                <ul>
+                  <li>Register at FDA FURLS (Unified Registration and Listing System)</li>
+                  <li>List all devices manufactured/distributed at your establishment</li>
+                  <li>Obtain 510(k) clearance, De Novo, or PMA if required for your device class</li>
+                  <li>FY2026 registration fee (waiver possible for certified small businesses)</li>
+                  <li>Domestic distributors who don't import are exempt from registration</li>
+                </ul>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-number">3</div>
+              <div class="step-title">Obtain NPI Number</div>
+              <div class="step-desc">Get a National Provider Identifier (NPI) through the National Plan and Provider Enumeration System (NPPES). This 10-digit number is required by CMS and commercial insurers for all billing transactions. You need one NPI per practice location.</div>
+              <div class="step-details">
+                <ul>
+                  <li>Apply through NPPES website</li>
+                  <li>NPI is required for Medicare/Medicaid billing</li>
+                  <li>Each physical location needs its own NPI</li>
+                  <li>Free to obtain</li>
+                </ul>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-number">4</div>
+              <div class="step-title">DMEPOS Accreditation (For Medicare)</div>
+              <div class="step-desc">To bill Medicare for Durable Medical Equipment, Prosthetics, Orthotics, and Supplies (DMEPOS), you must obtain accreditation from a CMS-approved organization. They verify you meet Quality Standards and conduct unannounced site visits.</div>
+              <div class="step-details">
+                <ul>
+                  <li>Select a CMS-approved accreditation organization</li>
+                  <li>Meet 42 CFR supplier standards</li>
+                  <li>Pass site inspection and quality review</li>
+                  <li>Accreditation must be maintained through periodic reviews</li>
+                  <li>CMS-approved orgs: The Joint Commission, ACHC, HQAA, others</li>
+                </ul>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-number">5</div>
+              <div class="step-title">Medicare Enrollment (PECOS)</div>
+              <div class="step-desc">Enroll in the Medicare program through PECOS (Provider Enrollment, Chain, and Ownership System). Complete the application, pay the Medicare application fee ($688 in 2023), and post a $50,000 surety bond per NPI.</div>
+              <div class="step-details">
+                <ul>
+                  <li>Complete PECOS online application</li>
+                  <li>Pay Medicare Application Fee</li>
+                  <li>Post $50,000 surety bond per NPI location</li>
+                  <li>Work with NPE DMEPOS contractor (East or West)</li>
+                  <li>Enrollment processed by National Provider Enrollment contractors</li>
+                </ul>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-number">6</div>
+              <div class="step-title">Hospital Vendor Credentialing</div>
+              <div class="step-desc">To sell directly to hospitals, your company and sales representatives must pass vendor credentialing. This includes background checks, health records, HIPAA training, insurance verification, and OIG exclusion list screening.</div>
+              <div class="step-details">
+                <ul>
+                  <li>Government-issued photo ID and background checks</li>
+                  <li>Vaccination records (MMR, Hep B, Flu, COVID-19, TB test)</li>
+                  <li>HIPAA compliance training (annual)</li>
+                  <li>Drug screening and infection control documentation</li>
+                  <li>General, Professional, and Cyber liability insurance</li>
+                  <li>OIG exclusion list and SAM.gov registration check</li>
+                  <li>Register with credentialing platforms (GHX, Reptrax, Vendormate)</li>
+                </ul>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-number">7</div>
+              <div class="step-title">Join GPOs & Distribution Networks</div>
+              <div class="step-desc">Most hospital purchasing (72%+) flows through Group Purchasing Organizations. Apply to become a contracted vendor with major GPOs like Vizient, Premier, and HealthTrust to access their member hospitals.</div>
+              <div class="step-details">
+                <ul>
+                  <li>Apply to GPOs: Vizient, Premier, HealthTrust, Intalere</li>
+                  <li>Partner with distributors: McKesson, Cardinal Health, Medline</li>
+                  <li>Consider manufacturer rep agreements</li>
+                  <li>Register on SAM.gov for government contracts</li>
+                  <li>Explore IDN (Integrated Delivery Network) contracts</li>
+                </ul>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-number">8</div>
+              <div class="step-title">Quality Management & ISO Certification</div>
+              <div class="step-desc">Implement a Quality Management System. ISO 13485:2016 certification is essential for credibility with hospitals and GPOs. It covers design, manufacturing, installation, and servicing of medical devices.</div>
+              <div class="step-details">
+                <ul>
+                  <li>Implement ISO 13485:2016 QMS</li>
+                  <li>Establish complaint handling (21 CFR 820.198)</li>
+                  <li>Medical Device Reporting (MDR) procedures</li>
+                  <li>Implement supply chain traceability (UDI compliance)</li>
+                  <li>Consider additional certifications: CE marking (EU), MDSAP</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Key Regulatory Bodies</div>
+        </div>
+        <div class="card-body">
+          <div class="source-grid">
+            <div class="source-card">
+              <div class="source-icon" style="background:var(--color-primary-light);">🏛️</div>
+              <div class="source-name">FDA (CDRH)</div>
+              <div class="source-type">Federal Regulator</div>
+              <div class="source-desc">Center for Devices and Radiological Health. Oversees device registration, listing, premarket clearance, and post-market surveillance.</div>
+            </div>
+            <div class="source-card">
+              <div class="source-icon" style="background:rgba(22,163,74,0.1);">🏛️</div>
+              <div class="source-name">CMS</div>
+              <div class="source-type">Medicare/Medicaid</div>
+              <div class="source-desc">Centers for Medicare & Medicaid Services. Manages DMEPOS enrollment, reimbursement rates, and supplier standards.</div>
+            </div>
+            <div class="source-card">
+              <div class="source-icon" style="background:rgba(124,58,237,0.1);">🏛️</div>
+              <div class="source-name">The Joint Commission</div>
+              <div class="source-type">Accreditation</div>
+              <div class="source-desc">Accredits hospitals and healthcare organizations. Sets vendor management program standards.</div>
+            </div>
+            <div class="source-card">
+              <div class="source-icon" style="background:rgba(217,119,6,0.1);">🏛️</div>
+              <div class="source-name">OIG / HHS</div>
+              <div class="source-type">Enforcement</div>
+              <div class="source-desc">Office of Inspector General. Maintains exclusion list (LEIE). Enforces Anti-Kickback Statute compliance.</div>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-</section>
 
-<!-- Section 6: How to Become a Supplier -->
-<section id="guide" class="py-12 sm:py-16 bg-white dark:bg-slate-900">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="fade-in">
-      <h2 class="font-display text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2">
-        <i class="fas fa-road text-accent mr-2"></i>How to Become a Medical Equipment Supplier
-      </h2>
-      <p class="text-gray-500 dark:text-gray-400 text-sm mb-8">8-step roadmap from business formation through GPO membership. Typical timeline: 12–18 months.</p>
-
-      <!-- Key Requirements Banner -->
-      <div class="mb-8 p-4 sm:p-6 bg-gradient-to-r from-med-50 to-sky-50 dark:from-med-950/50 dark:to-sky-950/50 rounded-2xl border border-med-200 dark:border-med-800">
-        <h3 class="font-display font-bold text-base text-gray-900 dark:text-white mb-3"><i class="fas fa-clipboard-check text-accent mr-2"></i>Key Requirements at a Glance</h3>
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-          <div class="flex items-center gap-2 text-xs text-gray-700 dark:text-gray-300"><i class="fas fa-check-circle text-emerald-500"></i>FDA Registration</div>
-          <div class="flex items-center gap-2 text-xs text-gray-700 dark:text-gray-300"><i class="fas fa-check-circle text-emerald-500"></i>NPI Number</div>
-          <div class="flex items-center gap-2 text-xs text-gray-700 dark:text-gray-300"><i class="fas fa-check-circle text-emerald-500"></i>DMEPOS Accred.</div>
-          <div class="flex items-center gap-2 text-xs text-gray-700 dark:text-gray-300"><i class="fas fa-check-circle text-emerald-500"></i>PECOS Enrollment</div>
-          <div class="flex items-center gap-2 text-xs text-gray-700 dark:text-gray-300"><i class="fas fa-check-circle text-emerald-500"></i>Vendor Credentialing</div>
-          <div class="flex items-center gap-2 text-xs text-gray-700 dark:text-gray-300"><i class="fas fa-check-circle text-emerald-500"></i>GPO Membership</div>
-        </div>
-        <p class="text-xs text-gray-500 dark:text-gray-400 mt-3">Regulatory bodies: <strong>FDA CDRH</strong>, <strong>CMS</strong>, <strong>Joint Commission</strong>, <strong>OIG</strong></p>
-      </div>
-
-      <!-- 8-Step Guide -->
-      <div class="space-y-5" id="steps-container">
-        <!-- Steps rendered by JS -->
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Footer -->
-<footer class="py-10 bg-med-950 text-med-300">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
-      <div>
-        <div class="flex items-center gap-2 mb-3">
-          <svg class="w-6 h-6 text-accent" viewBox="0 0 32 32" fill="none">
-            <rect x="2" y="2" width="28" height="28" rx="6" stroke="currentColor" stroke-width="2"/>
-            <path d="M16 8v16M8 16h16" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
-            <circle cx="16" cy="16" r="4" stroke="currentColor" stroke-width="1.5" fill="currentColor" opacity="0.15"/>
-          </svg>
-          <span class="font-display font-bold text-white">Med Equipment Map</span>
-        </div>
-        <p class="text-xs text-med-400 leading-relaxed">Interactive dashboard for US medical equipment market intelligence. Data compiled from public sources and industry estimates.</p>
-      </div>
-      <div>
-        <h4 class="font-semibold text-white text-sm mb-3">Sections</h4>
-        <div class="flex flex-col gap-1.5 text-xs">
-          <a href="#map" class="hover:text-accent transition-colors">Equipment Heatmap</a>
-          <a href="#rankings" class="hover:text-accent transition-colors">State Rankings</a>
-          <a href="#buyers" class="hover:text-accent transition-colors">Buyer Breakdown</a>
-          <a href="#pricing" class="hover:text-accent transition-colors">Pricing Guide</a>
-          <a href="#suppliers" class="hover:text-accent transition-colors">Suppliers</a>
-          <a href="#guide" class="hover:text-accent transition-colors">Supplier Guide</a>
-        </div>
-      </div>
-      <div>
-        <h4 class="font-semibold text-white text-sm mb-3">Data Sources</h4>
-        <div class="flex flex-col gap-1.5 text-xs">
-          <span>American Hospital Association (AHA)</span>
-          <span>Centers for Medicare & Medicaid (CMS)</span>
-          <span>FDA CDRH</span>
-          <span>Proclinical Industry Reports</span>
-          <span>Bureau of Labor Statistics</span>
-        </div>
-      </div>
-      <div>
-        <h4 class="font-semibold text-white text-sm mb-3">Disclaimer</h4>
-        <p class="text-xs text-med-400 leading-relaxed">This dashboard is for informational purposes only. Data are estimates based on publicly available sources and should not be used as the sole basis for business decisions. Verify all figures with primary sources.</p>
-      </div>
-    </div>
-    <div class="pt-6 border-t border-med-800 flex flex-col sm:flex-row items-center justify-between gap-3">
-      <p class="text-xs text-med-500">&copy; 2025 US Medical Equipment Market Map. All data from public sources.</p>
-      <a href="https://www.perplexity.ai/computer" target="_blank" rel="noopener noreferrer" class="text-xs text-med-500 hover:text-accent transition-colors">Created with Perplexity Computer</a>
-    </div>
-  </div>
-</footer>
-
-<script>
-// ============================================================
-// DATA
-// ============================================================
-
-// FIPS code to state mapping
-const fipsToState = {
-  "01":"Alabama","02":"Alaska","04":"Arizona","05":"Arkansas","06":"California",
-  "08":"Colorado","09":"Connecticut","10":"Delaware","11":"District of Columbia",
-  "12":"Florida","13":"Georgia","15":"Hawaii","16":"Idaho","17":"Illinois",
-  "18":"Indiana","19":"Iowa","20":"Kansas","21":"Kentucky","22":"Louisiana",
-  "23":"Maine","24":"Maryland","25":"Massachusetts","26":"Michigan","27":"Minnesota",
-  "28":"Mississippi","29":"Missouri","30":"Montana","31":"Nebraska","32":"Nevada",
-  "33":"New Hampshire","34":"New Jersey","35":"New Mexico","36":"New York",
-  "37":"North Carolina","38":"North Dakota","39":"Ohio","40":"Oklahoma","41":"Oregon",
-  "42":"Pennsylvania","44":"Rhode Island","45":"South Carolina","46":"South Dakota",
-  "47":"Tennessee","48":"Texas","49":"Utah","50":"Vermont","51":"Virginia",
-  "53":"Washington","54":"West Virginia","55":"Wisconsin","56":"Wyoming"
-};
-
-// State populations (approx, for per-capita)
-const statePopulations = {
-  "California":39538,"Texas":29145,"Florida":21538,"New York":20201,"Pennsylvania":13002,
-  "Illinois":12812,"Ohio":11799,"Georgia":10711,"North Carolina":10439,"Michigan":10077,
-  "New Jersey":9289,"Virginia":8631,"Washington":7615,"Arizona":7151,"Massachusetts":7029,
-  "Tennessee":6910,"Indiana":6786,"Maryland":6177,"Missouri":6154,"Wisconsin":5893,
-  "Colorado":5773,"Minnesota":5706,"South Carolina":5118,"Alabama":5024,"Louisiana":4657,
-  "Kentucky":4505,"Oregon":4237,"Oklahoma":3959,"Connecticut":3605,"Utah":3271,
-  "Iowa":3190,"Nevada":3104,"Arkansas":3011,"Mississippi":2961,"Kansas":2937,
-  "New Mexico":2117,"Nebraska":1961,"Idaho":1839,"West Virginia":1793,"Hawaii":1455,
-  "New Hampshire":1377,"Maine":1362,"Rhode Island":1097,"Montana":1084,"Delaware":989,
-  "South Dakota":886,"North Dakota":779,"Alaska":733,"District of Columbia":689,
-  "Vermont":643,"Wyoming":577
-};
-
-// Top 15 states with detailed data
-const topStatesData = [
-  { state:"California", spend:18.5, hospitals:418, category:"Surgical/OR", buyer:"Hospital Systems", fips:"06" },
-  { state:"Texas", spend:13.2, hospitals:413, category:"Imaging/Radiology", buyer:"Hospital Systems", fips:"48" },
-  { state:"New York", spend:12.4, hospitals:192, category:"Surgical/OR", buyer:"Academic Medical Centers", fips:"36" },
-  { state:"Florida", spend:11.8, hospitals:228, category:"Imaging/Radiology", buyer:"Hospital Systems", fips:"12" },
-  { state:"Pennsylvania", spend:8.6, hospitals:177, category:"Surgical/OR", buyer:"Hospital Systems", fips:"42" },
-  { state:"Illinois", spend:7.9, hospitals:186, category:"Imaging/Radiology", buyer:"Hospital Systems", fips:"17" },
-  { state:"Ohio", spend:7.2, hospitals:177, category:"Patient Monitoring", buyer:"Hospital Systems", fips:"39" },
-  { state:"New Jersey", spend:6.1, hospitals:71, category:"Surgical/OR", buyer:"Academic Medical Centers", fips:"34" },
-  { state:"Michigan", spend:5.8, hospitals:139, category:"Imaging/Radiology", buyer:"Hospital Systems", fips:"26" },
-  { state:"Massachusetts", spend:5.6, hospitals:68, category:"Surgical/OR", buyer:"Academic Medical Centers", fips:"25" },
-  { state:"Virginia", spend:5.1, hospitals:89, category:"Patient Monitoring", buyer:"Hospital Systems", fips:"51" },
-  { state:"North Carolina", spend:4.9, hospitals:112, category:"Imaging/Radiology", buyer:"Hospital Systems", fips:"37" },
-  { state:"Georgia", spend:4.7, hospitals:147, category:"Patient Monitoring", buyer:"Hospital Systems", fips:"13" },
-  { state:"Washington", spend:4.5, hospitals:91, category:"Surgical/OR", buyer:"Hospital Systems", fips:"53" },
-  { state:"Maryland", spend:4.3, hospitals:47, category:"Surgical/OR", buyer:"Academic Medical Centers", fips:"24" }
-];
-
-// Generate proportional data for remaining states
-const allStatesData = {};
-topStatesData.forEach(s => { allStatesData[s.state] = s; });
-
-const categories = ["Surgical/OR","Imaging/Radiology","Patient Monitoring","Lab Equipment","Emergency"];
-const buyers = ["Hospital Systems","Academic Medical Centers","Community Hospitals","Regional Networks"];
-const remainingStates = Object.values(fipsToState).filter(s => !allStatesData[s]);
-
-// Proportional estimation based on population
-remainingStates.forEach(st => {
-  const pop = statePopulations[st] || 1000;
-  const ratio = pop / 39538; // ratio to CA
-  const spend = Math.round(18.5 * ratio * 10) / 10;
-  const hospitals = Math.max(10, Math.round(418 * ratio * (0.7 + Math.random()*0.6)));
-  const fips = Object.keys(fipsToState).find(k => fipsToState[k] === st);
-  allStatesData[st] = {
-    state: st,
-    spend: Math.max(0.3, spend),
-    hospitals: hospitals,
-    category: categories[Math.floor(Math.random()*categories.length)],
-    buyer: buyers[Math.floor(Math.random()*buyers.length)],
-    fips: fips
-  };
-});
-
-// Med device jobs (estimated)
-function getJobs(state) {
-  const pop = statePopulations[state] || 1000;
-  const base = Math.round(pop * 2.5);
-  const bonus = { "California": 32000, "Massachusetts": 18000, "Minnesota": 22000, "Indiana": 14000, "New Jersey": 12000, "Pennsylvania": 10000, "Illinois": 9000, "New York": 8000, "Texas": 7000, "Connecticut": 6000 };
-  return bonus[state] || base;
-}
-
-// Per capita HC spend
-function getPerCapita(state) {
-  const pop = statePopulations[state] || 1000;
-  const spendB = (allStatesData[state]?.spend || 1) * 1000;
-  return Math.round(spendB / pop * 1000);
-}
-
-// Manufacturers data
-const manufacturers = [
-  { name:"Medtronic", revenue:"$34.8B", specialty:"Cardiac, Surgical, Diabetes" },
-  { name:"Johnson & Johnson", revenue:"$27.1B", specialty:"Orthopedics, Surgery, Vision" },
-  { name:"Abbott", revenue:"$20.2B", specialty:"Diagnostics, Cardiac, Neuro" },
-  { name:"Becton Dickinson", revenue:"$19.4B", specialty:"Injection, Diagnostics, Surgery" },
-  { name:"Siemens Healthineers", revenue:"$19.4B", specialty:"Imaging, Lab Diagnostics" },
-  { name:"Stryker", revenue:"$18.4B", specialty:"Orthopedics, Surgical, Neuro" },
-  { name:"GE Healthcare", revenue:"$18.3B", specialty:"Imaging, Ultrasound, Monitoring" },
-  { name:"Philips", revenue:"$17.8B", specialty:"Imaging, Patient Monitoring" },
-  { name:"Boston Scientific", revenue:"$14.2B", specialty:"Cardiology, Endoscopy, Neuro" },
-  { name:"Baxter", revenue:"$13.1B", specialty:"Renal, Hospital, Surgical" }
-];
-
-const distributors = [
-  { name:"McKesson", type:"Distributor", desc:"Largest healthcare distributor ($276B revenue). Medical-surgical supplies & equipment." },
-  { name:"Cardinal Health", type:"Distributor", desc:"Medical products distribution, lab supplies, surgical products." },
-  { name:"Medline", type:"Distributor", desc:"Largest private medical supply company. Manufacturer & distributor." },
-  { name:"Vizient", type:"GPO", desc:"Largest GPO. ~$100B purchasing volume. ~50% US hospitals." },
-  { name:"Premier", type:"GPO", desc:"Major GPO. ~$70B purchasing volume. 4,400+ member hospitals." },
-  { name:"HealthTrust", type:"GPO", desc:"GPO subsidiary of HCA. ~$50B purchasing volume." },
-  { name:"Intalere", type:"GPO", desc:"Merged with Vizient. Mid-market hospital focus." },
-  { name:"Provista", type:"GPO", desc:"Non-acute care GPO. Clinics, ASCs, long-term care." }
-];
-
-// Pricing data
-const pricingData = [
-  { equipment:"Exam Tables", contractLow:500, contractHigh:3000 },
-  { equipment:"Patient Monitors", contractLow:2000, contractHigh:15000 },
-  { equipment:"Infusion Pumps", contractLow:3000, contractHigh:8000 },
-  { equipment:"EKG/ECG Machines", contractLow:2500, contractHigh:12000 },
-  { equipment:"Defibrillators (AED)", contractLow:1200, contractHigh:3500 },
-  { equipment:"Ventilators", contractLow:15000, contractHigh:50000 },
-  { equipment:"Anesthesia Machines", contractLow:20000, contractHigh:80000 },
-  { equipment:"Ultrasound Systems", contractLow:25000, contractHigh:200000 },
-  { equipment:"Endoscopy Systems", contractLow:30000, contractHigh:150000 },
-  { equipment:"X-Ray Systems", contractLow:50000, contractHigh:300000 },
-  { equipment:"C-Arm (Fluoroscopy)", contractLow:60000, contractHigh:250000 },
-  { equipment:"CT Scanners", contractLow:150000, contractHigh:2500000 },
-  { equipment:"MRI Scanners", contractLow:500000, contractHigh:3000000 },
-  { equipment:"Linear Accelerators", contractLow:2000000, contractHigh:4500000 },
-  { equipment:"Surgical Robot Systems", contractLow:1500000, contractHigh:4900000 }
-];
-const spotPremium = 1.437;
-
-// Steps data
-const stepsData = [
-  {
-    num: 1, title: "Business Formation & Licensing",
-    icon: "fa-building", color: "bg-blue-500",
-    desc: "Register your business entity (LLC or Corporation). Obtain state business licenses, EIN from IRS, and any state-specific medical device dealer permits.",
-    details: ["Form LLC or Corporation", "Obtain EIN from IRS", "State business license", "Medical device dealer permit (if required)", "Liability insurance ($1M+ recommended)"],
-    timeline: "2–4 weeks"
-  },
-  {
-    num: 2, title: "FDA Registration & Device Listing",
-    icon: "fa-flask", color: "bg-red-500",
-    desc: "Register your establishment with FDA and list all devices you plan to distribute. Required for all device manufacturers, repackagers, relabelers, and initial importers.",
-    details: ["Register on FDA FURLS system", "Annual registration fee (~$7,653)", "List each device by product code", "Designate US Agent if foreign", "510(k) or PMA if manufacturing"],
-    timeline: "4–8 weeks"
-  },
-  {
-    num: 3, title: "Quality Management System (ISO 13485)",
-    icon: "fa-certificate", color: "bg-purple-500",
-    desc: "Implement and certify your QMS to ISO 13485. Required by most hospitals and GPOs. Also aligns with FDA's Quality System Regulation (21 CFR 820).",
-    details: ["Develop QMS documentation", "Internal audit procedures", "CAPA system", "Management review process", "Third-party certification audit"],
-    timeline: "3–6 months"
-  },
-  {
-    num: 4, title: "Obtain NPI Number",
-    icon: "fa-id-card", color: "bg-green-500",
-    desc: "Apply for a National Provider Identifier through NPPES. Required for billing Medicare/Medicaid and for most hospital vendor applications.",
-    details: ["Apply via NPPES portal", "Type 2 NPI for organizations", "Free — no application fee", "Typically approved in 1–5 days", "Required for PECOS enrollment"],
-    timeline: "1–2 weeks"
-  },
-  {
-    num: 5, title: "DMEPOS Accreditation",
-    icon: "fa-award", color: "bg-amber-500",
-    desc: "Obtain Durable Medical Equipment, Prosthetics, Orthotics, and Supplies accreditation from a CMS-approved accrediting organization if supplying DME.",
-    details: ["Choose accrediting body (e.g., ACHC, BOC)", "Application & site survey", "Quality standards compliance", "3-year accreditation cycle", "Required for Medicare DME billing"],
-    timeline: "2–4 months"
-  },
-  {
-    num: 6, title: "Medicare Enrollment (PECOS)",
-    icon: "fa-hospital-user", color: "bg-teal-500",
-    desc: "Enroll as a Medicare supplier through the Provider Enrollment, Chain, and Ownership System (PECOS). Required to supply equipment billed to Medicare.",
-    details: ["Apply via PECOS or CMS-855S", "Include DMEPOS accreditation", "NSC processes application", "Surety bond ($50K required)", "Revalidation every 3–5 years"],
-    timeline: "2–4 months"
-  },
-  {
-    num: 7, title: "Hospital Vendor Credentialing",
-    icon: "fa-user-check", color: "bg-indigo-500",
-    desc: "Register with hospital vendor credentialing services. Most hospitals require vendors to be credentialed before entering facilities.",
-    details: ["Register with Reptrax/Vendormate", "Background checks required", "HIPAA training & compliance", "Proof of insurance", "Annual renewal"],
-    timeline: "2–6 weeks"
-  },
-  {
-    num: 8, title: "GPO Membership Application",
-    icon: "fa-handshake", color: "bg-rose-500",
-    desc: "Apply to join GPO contract portfolios. GPOs negotiate volume discounts and 72% of hospital purchasing flows through them.",
-    details: ["Identify target GPOs (Vizient, Premier, HealthTrust)", "RFP/RFI response", "Competitive pricing required", "Contract terms negotiation", "Typically 1–3 year contracts"],
-    timeline: "3–6 months"
-  }
-];
-
-// ============================================================
-// DARK MODE
-// ============================================================
-const html = document.documentElement;
-const themeToggle = document.getElementById('theme-toggle');
-const savedTheme = localStorage.getItem('med-map-theme');
-if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-  html.classList.add('dark');
-}
-themeToggle.addEventListener('click', () => {
-  html.classList.toggle('dark');
-  localStorage.setItem('med-map-theme', html.classList.contains('dark') ? 'dark' : 'light');
-  updateChartColors();
-});
-
-// ============================================================
-// MOBILE MENU
-// ============================================================
-const mobileBtn = document.getElementById('mobile-menu-btn');
-const mobileMenu = document.getElementById('mobile-menu');
-mobileBtn.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
-mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => mobileMenu.classList.add('hidden')));
-
-// ============================================================
-// NAV SCROLL SHADOW
-// ============================================================
-const navbar = document.getElementById('navbar');
-window.addEventListener('scroll', () => {
-  navbar.classList.toggle('nav-scrolled', window.scrollY > 10);
-});
-
-// ============================================================
-// FADE IN ON SCROLL
-// ============================================================
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
-}, { threshold: 0.1 });
-document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
-
-// ============================================================
-// SECTION 1: D3.js CHOROPLETH MAP
-// ============================================================
-const tooltip = document.getElementById('tooltip');
-let currentMetric = 'spend';
-
-const colorScales = {
-  spend: d3.scaleSequential(d3.interpolateBlues).domain([0, 20]),
-  percapita: d3.scaleSequential(d3.interpolateGreens).domain([0, 800]),
-  hospitals: d3.scaleSequential(d3.interpolateOranges).domain([0, 420]),
-  jobs: d3.scaleSequential(d3.interpolatePurples).domain([0, 35000])
-};
-
-function getMetricValue(state, metric) {
-  const d = allStatesData[state];
-  if (!d) return 0;
-  switch(metric) {
-    case 'spend': return d.spend;
-    case 'percapita': return getPerCapita(state);
-    case 'hospitals': return d.hospitals;
-    case 'jobs': return getJobs(state);
-    default: return d.spend;
-  }
-}
-
-function formatMetricValue(val, metric) {
-  switch(metric) {
-    case 'spend': return '$' + val.toFixed(1) + 'B';
-    case 'percapita': return '$' + val.toLocaleString();
-    case 'hospitals': return val.toLocaleString();
-    case 'jobs': return val.toLocaleString();
-    default: return val;
-  }
-}
-
-function getMetricLabel(metric) {
-  switch(metric) {
-    case 'spend': return 'Est. Equipment Spend';
-    case 'percapita': return 'Per Capita HC Spend';
-    case 'hospitals': return 'Number of Hospitals';
-    case 'jobs': return 'Med Device Jobs';
-    default: return '';
-  }
-}
-
-// Build legend
-function buildLegend() {
-  const legend = document.getElementById('map-legend');
-  legend.innerHTML = '';
-  const scale = colorScales[currentMetric];
-  const steps = 8;
-  for (let i = 0; i < steps; i++) {
-    const t = i / (steps - 1);
-    const color = scale(scale.domain()[0] + t * (scale.domain()[1] - scale.domain()[0]));
-    const div = document.createElement('div');
-    div.style.flex = '1';
-    div.style.backgroundColor = color;
-    legend.appendChild(div);
-  }
-}
-
-// Load and render map
-async function renderMap() {
-  try {
-    const us = await d3.json('https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json');
-    document.getElementById('map-loading').remove();
-
-    const container = document.getElementById('map-container');
-    const width = 960;
-    const height = 600;
-
-    const svg = d3.select('#map-container')
-      .append('svg')
-      .attr('viewBox', `0 0 ${width} ${height}`)
-      .attr('preserveAspectRatio', 'xMidYMid meet');
-
-    const projection = d3.geoAlbersUsa().fitSize([width, height], topojson.feature(us, us.objects.states));
-    const path = d3.geoPath().projection(projection);
-
-    const states = topojson.feature(us, us.objects.states).features;
-
-    function updateMapColors(metric) {
-      const scale = colorScales[metric];
-      svg.selectAll('.state-path')
-        .transition()
-        .duration(500)
-        .attr('fill', d => {
-          const stateName = fipsToState[String(d.id).padStart(2, '0')];
-          if (!stateName) return '#ddd';
-          const val = getMetricValue(stateName, metric);
-          return scale(val);
-        });
-    }
-
-    svg.selectAll('path')
-      .data(states)
-      .join('path')
-      .attr('d', path)
-      .attr('class', 'state-path')
-      .attr('fill', d => {
-        const stateName = fipsToState[String(d.id).padStart(2, '0')];
-        if (!stateName) return '#ddd';
-        return colorScales.spend(allStatesData[stateName]?.spend || 0);
-      })
-      .on('mousemove', function(event, d) {
-        const stateName = fipsToState[String(d.id).padStart(2, '0')];
-        if (!stateName || !allStatesData[stateName]) return;
-        const sd = allStatesData[stateName];
-        tooltip.style.opacity = '1';
-        tooltip.innerHTML = `
-          <div style="font-weight:700;font-size:15px;margin-bottom:6px;">${stateName}</div>
-          <div style="display:grid;grid-template-columns:auto 1fr;gap:2px 12px;font-size:12px;">
-            <span style="color:#64748b;">Equipment Spend:</span><span style="font-weight:600;">$${sd.spend.toFixed(1)}B</span>
-            <span style="color:#64748b;">Hospitals:</span><span style="font-weight:600;">${sd.hospitals.toLocaleString()}</span>
-            <span style="color:#64748b;">Top Buyer:</span><span style="font-weight:600;">${sd.buyer}</span>
-            <span style="color:#64748b;">Top Category:</span><span style="font-weight:600;">${sd.category}</span>
-            <span style="color:#64748b;">Med Device Jobs:</span><span style="font-weight:600;">${getJobs(stateName).toLocaleString()}</span>
-          </div>
-        `;
-        const rect = container.getBoundingClientRect();
-        let left = event.clientX - rect.left + 15;
-        let top = event.clientY - rect.top - 10;
-        if (left + 280 > rect.width) left = left - 300;
-        if (top + 160 > rect.height) top = top - 160;
-        tooltip.style.left = left + 'px';
-        tooltip.style.top = top + 'px';
-      })
-      .on('mouseleave', () => { tooltip.style.opacity = '0'; });
-
-    // Metric selector
-    document.getElementById('metric-select').addEventListener('change', function() {
-      currentMetric = this.value;
-      updateMapColors(currentMetric);
-      buildLegend();
-    });
-
-    buildLegend();
-
-    // Store update function for theme changes
-    window.updateMapColors = () => updateMapColors(currentMetric);
-
-  } catch (err) {
-    console.error('Map loading error:', err);
-    document.getElementById('map-loading').innerHTML = `<p class="text-red-500">Error loading map. Please refresh.</p>`;
-  }
-}
-renderMap();
-
-// ============================================================
-// SECTION 2: RANKINGS TABLE
-// ============================================================
-let sortCol = 'rank';
-let sortDir = 'asc';
-
-function renderRankings() {
-  const body = document.getElementById('rankings-body');
-  let data = [...topStatesData].map((d, i) => ({...d, rank: i + 1}));
-
-  if (sortCol === 'state') data.sort((a,b) => sortDir === 'asc' ? a.state.localeCompare(b.state) : b.state.localeCompare(a.state));
-  else if (sortCol === 'spend') data.sort((a,b) => sortDir === 'asc' ? a.spend - b.spend : b.spend - a.spend);
-  else if (sortCol === 'hospitals') data.sort((a,b) => sortDir === 'asc' ? a.hospitals - b.hospitals : b.hospitals - a.hospitals);
-  else data.sort((a,b) => sortDir === 'asc' ? a.rank - b.rank : b.rank - a.rank);
-
-  body.innerHTML = data.map(d => {
-    const badge = d.rank === 1 ? '<span class="inline-flex items-center justify-center w-6 h-6 rounded-full badge-gold text-[10px] font-bold">1</span>' :
-                  d.rank === 2 ? '<span class="inline-flex items-center justify-center w-6 h-6 rounded-full badge-silver text-[10px] font-bold">2</span>' :
-                  d.rank === 3 ? '<span class="inline-flex items-center justify-center w-6 h-6 rounded-full badge-bronze text-[10px] font-bold">3</span>' :
-                  `<span class="text-gray-400 dark:text-gray-500 font-mono text-xs">${d.rank}</span>`;
-    const highlight = d.rank <= 3 ? 'bg-accent/[0.03] dark:bg-accent/[0.05]' : '';
-    return `<tr class="table-row-hover ${highlight} border-b border-gray-100 dark:border-slate-800/50">
-      <td class="px-4 py-3">${badge}</td>
-      <td class="px-4 py-3 font-medium text-gray-900 dark:text-white">${d.state}</td>
-      <td class="px-4 py-3 text-right font-semibold text-gray-900 dark:text-white tabular-nums">$${d.spend.toFixed(1)}B</td>
-      <td class="px-4 py-3 text-right tabular-nums text-gray-600 dark:text-gray-400">${d.hospitals.toLocaleString()}</td>
-      <td class="px-4 py-3 text-gray-600 dark:text-gray-400">${d.category}</td>
-      <td class="px-4 py-3 text-gray-600 dark:text-gray-400">${d.buyer}</td>
-    </tr>`;
-  }).join('');
-}
-
-document.querySelectorAll('.sortable').forEach(th => {
-  th.addEventListener('click', () => {
-    const col = th.dataset.col;
-    if (sortCol === col) sortDir = sortDir === 'asc' ? 'desc' : 'asc';
-    else { sortCol = col; sortDir = col === 'rank' ? 'asc' : 'desc'; }
-    renderRankings();
-  });
-});
-
-renderRankings();
-
-// ============================================================
-// SECTION 3: CHARTS
-// ============================================================
-let buyerDonutChart, deptBarChart, pricingBarChart;
-
-function isDark() { return html.classList.contains('dark'); }
-function chartTextColor() { return isDark() ? '#94a3b8' : '#64748b'; }
-function chartGridColor() { return isDark() ? 'rgba(148,163,184,0.1)' : 'rgba(0,0,0,0.06)'; }
-
-// Buyer Donut
-function createBuyerDonut() {
-  const ctx = document.getElementById('buyerDonut').getContext('2d');
-  buyerDonutChart = new Chart(ctx, {
-    type: 'doughnut',
-    data: {
-      labels: ['Hospitals (62%)', 'ASCs/Clinics (18%)', 'Private Practice (12%)', 'Govt/Research (8%)'],
-      datasets: [{
-        data: [62, 18, 12, 8],
-        backgroundColor: ['#0ea5e9', '#06b6d4', '#8b5cf6', '#f59e0b'],
-        borderWidth: 0,
-        hoverOffset: 8
-      }]
-    },
-    options: {
-      cutout: '65%',
-      responsive: true,
-      maintainAspectRatio: true,
-      plugins: {
-        legend: {
-          position: 'bottom',
-          labels: { color: chartTextColor(), font: { size: 11, family: 'Inter' }, padding: 12, usePointStyle: true, pointStyleWidth: 8 }
-        },
-        tooltip: {
-          backgroundColor: isDark() ? '#1e293b' : '#fff',
-          titleColor: isDark() ? '#f1f5f9' : '#1e293b',
-          bodyColor: isDark() ? '#cbd5e1' : '#475569',
-          borderColor: isDark() ? '#334155' : '#e2e8f0',
-          borderWidth: 1,
-          padding: 12,
-          cornerRadius: 8,
-          bodyFont: { family: 'Inter' },
-          titleFont: { family: 'Inter', weight: 600 }
-        }
-      }
-    }
-  });
-}
-
-// Department Bar
-function createDeptBar() {
-  const ctx = document.getElementById('deptBar').getContext('2d');
-  deptBarChart = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: ['Operating Room', 'ICU', 'Radiology', 'Emergency', 'Lab'],
-      datasets: [{
-        label: 'Share of Hospital Equipment Spend',
-        data: [42.3, 19.2, 14.8, 12.1, 11.6],
-        backgroundColor: ['#0ea5e9', '#06b6d4', '#0891b2', '#0e7490', '#155e75'],
-        borderRadius: 6,
-        barPercentage: 0.7
-      }]
-    },
-    options: {
-      indexAxis: 'y',
-      responsive: true,
-      maintainAspectRatio: false,
-      scales: {
-        x: {
-          grid: { color: chartGridColor() },
-          ticks: { color: chartTextColor(), callback: v => v + '%', font: { size: 11, family: 'Inter' } },
-          max: 50
-        },
-        y: {
-          grid: { display: false },
-          ticks: { color: chartTextColor(), font: { size: 11, family: 'Inter' } }
-        }
-      },
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          backgroundColor: isDark() ? '#1e293b' : '#fff',
-          titleColor: isDark() ? '#f1f5f9' : '#1e293b',
-          bodyColor: isDark() ? '#cbd5e1' : '#475569',
-          borderColor: isDark() ? '#334155' : '#e2e8f0',
-          borderWidth: 1,
-          padding: 12,
-          cornerRadius: 8,
-          callbacks: { label: ctx => ctx.parsed.x + '%' },
-          bodyFont: { family: 'Inter' },
-          titleFont: { family: 'Inter', weight: 600 }
-        }
-      }
-    }
-  });
-}
-
-createBuyerDonut();
-createDeptBar();
-
-// ============================================================
-// SECTION 4: PRICING TABLE
-// ============================================================
-function formatPrice(val) {
-  if (val >= 1000000) return '$' + (val/1000000).toFixed(1) + 'M';
-  if (val >= 1000) return '$' + (val/1000).toFixed(0) + 'K';
-  return '$' + val;
-}
-
-function renderPricingTable() {
-  const body = document.getElementById('pricing-body');
-  const maxPrice = Math.max(...pricingData.map(d => d.contractHigh * spotPremium));
-
-  body.innerHTML = pricingData.map(d => {
-    const spotLow = Math.round(d.contractLow * spotPremium);
-    const spotHigh = Math.round(d.contractHigh * spotPremium);
-    const barWidth = (d.contractHigh / maxPrice * 100).toFixed(1);
-    return `<tr class="table-row-hover">
-      <td class="px-4 py-3 font-medium text-gray-900 dark:text-white whitespace-nowrap">${d.equipment}</td>
-      <td class="px-4 py-3 text-right tabular-nums text-gray-700 dark:text-gray-300 whitespace-nowrap">${formatPrice(d.contractLow)} – ${formatPrice(d.contractHigh)}</td>
-      <td class="px-4 py-3 text-right tabular-nums text-amber-600 dark:text-amber-400 whitespace-nowrap">${formatPrice(spotLow)} – ${formatPrice(spotHigh)}</td>
-      <td class="px-4 py-3 hidden sm:table-cell"><div class="w-full bg-gray-200 dark:bg-slate-700 rounded-full h-2"><div class="price-bar bg-accent rounded-full h-2" style="width:${barWidth}%"></div></div></td>
-    </tr>`;
-  }).join('');
-}
-renderPricingTable();
-
-// Pricing Comparison Chart
-function createPricingChart() {
-  const ctx = document.getElementById('pricingChart').getContext('2d');
-  const labels = pricingData.filter((_,i) => i % 2 === 0).map(d => d.equipment.split(' ')[0]);
-  const contractData = pricingData.filter((_,i) => i % 2 === 0).map(d => d.contractHigh);
-  const spotData = pricingData.filter((_,i) => i % 2 === 0).map(d => Math.round(d.contractHigh * spotPremium));
-
-  pricingBarChart = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels,
-      datasets: [
-        { label: 'Contract', data: contractData, backgroundColor: '#0ea5e9', borderRadius: 4, barPercentage: 0.6 },
-        { label: 'Spot (+43.7%)', data: spotData, backgroundColor: '#f59e0b', borderRadius: 4, barPercentage: 0.6 }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      scales: {
-        x: {
-          grid: { display: false },
-          ticks: { color: chartTextColor(), font: { size: 9, family: 'Inter' }, maxRotation: 45, minRotation: 45 }
-        },
-        y: {
-          grid: { color: chartGridColor() },
-          ticks: {
-            color: chartTextColor(),
-            font: { size: 10, family: 'Inter' },
-            callback: v => { if(v>=1000000) return '$'+v/1000000+'M'; if(v>=1000) return '$'+v/1000+'K'; return '$'+v; }
-          }
-        }
-      },
-      plugins: {
-        legend: { labels: { color: chartTextColor(), font: { size: 10, family: 'Inter' }, usePointStyle: true, pointStyleWidth: 8, padding: 10 } },
-        tooltip: {
-          backgroundColor: isDark() ? '#1e293b' : '#fff',
-          titleColor: isDark() ? '#f1f5f9' : '#1e293b',
-          bodyColor: isDark() ? '#cbd5e1' : '#475569',
-          borderColor: isDark() ? '#334155' : '#e2e8f0',
-          borderWidth: 1,
-          padding: 12,
-          cornerRadius: 8,
-          callbacks: { label: ctx => ctx.dataset.label + ': ' + formatPrice(ctx.parsed.y) },
-          bodyFont: { family: 'Inter' },
-          titleFont: { family: 'Inter', weight: 600 }
-        }
-      }
-    }
-  });
-}
-createPricingChart();
-
-// ============================================================
-// SECTION 5: MANUFACTURERS & DISTRIBUTORS
-// ============================================================
-function renderManufacturers() {
-  const body = document.getElementById('manufacturers-body');
-  body.innerHTML = manufacturers.map((m, i) => {
-    const rank = i + 1;
-    return `<tr class="table-row-hover">
-      <td class="px-6 py-3 text-gray-400 dark:text-gray-500 font-mono text-xs">${rank}</td>
-      <td class="px-6 py-3 font-medium text-gray-900 dark:text-white">${m.name}</td>
-      <td class="px-6 py-3 text-right font-semibold tabular-nums text-accent">${m.revenue}</td>
-      <td class="px-6 py-3 text-gray-600 dark:text-gray-400 text-xs">${m.specialty}</td>
-    </tr>`;
-  }).join('');
-}
-
-function renderDistributors() {
-  const container = document.getElementById('distributors-list');
-  container.innerHTML = distributors.map(d => {
-    const typeColor = d.type === 'GPO' ? 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300' : 'bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-300';
-    return `<div class="flex items-start gap-3 p-3 rounded-lg bg-gray-50 dark:bg-slate-800/50 border border-gray-100 dark:border-slate-700/50">
-      <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${typeColor} mt-0.5 whitespace-nowrap">${d.type}</span>
-      <div>
-        <div class="font-semibold text-sm text-gray-900 dark:text-white">${d.name}</div>
-        <div class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">${d.desc}</div>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-renderManufacturers();
-renderDistributors();
-
-// ============================================================
-// SECTION 6: STEPS GUIDE
-// ============================================================
-function renderSteps() {
-  const container = document.getElementById('steps-container');
-  container.innerHTML = stepsData.map(s => `
-    <div class="step-card flex gap-4 sm:gap-6">
-      <div class="flex-shrink-0">
-        <div class="${s.color} w-14 h-14 rounded-xl flex items-center justify-center shadow-lg">
-          <i class="fas ${s.icon} text-white text-lg"></i>
-        </div>
-      </div>
-      <div class="flex-1 pb-6">
-        <div class="flex flex-wrap items-center gap-3 mb-2">
-          <span class="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500">Step ${s.num}</span>
-          <span class="text-[10px] px-2 py-0.5 rounded-full bg-gray-100 dark:bg-slate-800 text-gray-500 dark:text-gray-400 font-medium">${s.timeline}</span>
-        </div>
-        <h3 class="font-display font-bold text-lg text-gray-900 dark:text-white mb-2">${s.title}</h3>
-        <p class="text-sm text-gray-600 dark:text-gray-400 mb-3 leading-relaxed">${s.desc}</p>
-        <div class="bg-gray-50 dark:bg-slate-800/60 rounded-xl p-4 border border-gray-100 dark:border-slate-700/50">
-          <ul class="space-y-1.5">
-            ${s.details.map(d => `<li class="flex items-start gap-2 text-xs text-gray-600 dark:text-gray-400"><i class="fas fa-check text-emerald-500 mt-0.5 text-[10px]"></i>${d}</li>`).join('')}
-          </ul>
-        </div>
-      </div>
-    </div>
-  `).join('');
-}
-renderSteps();
-
-// ============================================================
-// THEME UPDATE FOR CHARTS
-// ============================================================
-function updateChartColors() {
-  const tc = chartTextColor();
-  const gc = chartGridColor();
-  const bg = isDark() ? '#1e293b' : '#fff';
-  const tColor = isDark() ? '#f1f5f9' : '#1e293b';
-  const bColor = isDark() ? '#cbd5e1' : '#475569';
-  const borderC = isDark() ? '#334155' : '#e2e8f0';
-
-  function updateTooltip(chart) {
-    chart.options.plugins.tooltip.backgroundColor = bg;
-    chart.options.plugins.tooltip.titleColor = tColor;
-    chart.options.plugins.tooltip.bodyColor = bColor;
-    chart.options.plugins.tooltip.borderColor = borderC;
-  }
-
-  // Donut
-  buyerDonutChart.options.plugins.legend.labels.color = tc;
-  updateTooltip(buyerDonutChart);
-  buyerDonutChart.update('none');
-
-  // Dept bar
-  deptBarChart.options.scales.x.ticks.color = tc;
-  deptBarChart.options.scales.y.ticks.color = tc;
-  deptBarChart.options.scales.x.grid.color = gc;
-  updateTooltip(deptBarChart);
-  deptBarChart.update('none');
-
-  // Pricing chart
-  pricingBarChart.options.scales.x.ticks.color = tc;
-  pricingBarChart.options.scales.y.ticks.color = tc;
-  pricingBarChart.options.scales.y.grid.color = gc;
-  pricingBarChart.options.plugins.legend.labels.color = tc;
-  updateTooltip(pricingBarChart);
-  pricingBarChart.update('none');
-}
-</script>
-
+  <!-- FOOTER -->
+  <footer class="dashboard-footer">
+    <p>Data sources: CMS NHE, AHA, Grand View Research, KFF, FDA, XS Supply. Market estimates derived from healthcare expenditure data and industry reports (2024-2025).</p>
+    <p style="margin-top:var(--space-2);">
+      <a href="https://www.perplexity.ai/computer" target="_blank" rel="noopener noreferrer">Created with Perplexity Computer</a>
+    </p>
+  </footer>
+
+  <!-- TOOLTIP -->
+  <div class="map-tooltip" id="mapTooltip"></div>
+</div>
+
+<script src="./app.js"></script>
 </body>
 </html>
