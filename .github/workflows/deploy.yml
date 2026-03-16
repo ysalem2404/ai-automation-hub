@@ -50,6 +50,9 @@ jobs:
           cp app.js _site/app.js
           
           echo "Copying React app (Data Matcher)..."
+          if [ -f dist/data-matcher.html ]; then
+            mv dist/data-matcher.html dist/index.html
+          fi
           cp -r dist/. _site/tools/data-matcher/
           
           echo "Copying Medical Equipment Map..."
