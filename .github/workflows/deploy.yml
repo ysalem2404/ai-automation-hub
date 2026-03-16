@@ -33,20 +33,21 @@ jobs:
       - name: Build React app
         run: npm run build
         
-      - name: List dist contents
-        run: |
-          echo "===== Contents of dist folder ====="
-          ls -lah dist/
-          find dist/ -type f
-        
       - name: Create deployment structure
         run: |
           mkdir -p _site/tools/data-matcher
           mkdir -p _site/tools/med-equipment-map
           mkdir -p _site/tools/ai-datacenter-map
           
-          echo "Copying landing page..."
-          cp landing.html _site/index.html
+          echo "Copying Nexus Flow v2 site pages..."
+          cp index.html _site/index.html
+          cp demos.html _site/demos.html
+          cp engage.html _site/engage.html
+          cp about.html _site/about.html
+          cp contact.html _site/contact.html
+          cp base.css _site/base.css
+          cp style.css _site/style.css
+          cp app.js _site/app.js
           
           echo "Copying React app (Data Matcher)..."
           cp -r dist/. _site/tools/data-matcher/
