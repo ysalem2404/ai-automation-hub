@@ -61,6 +61,9 @@ jobs:
           echo "Copying AI Datacenter Map..."
           cp -r tools/ai-datacenter-map/. _site/tools/ai-datacenter-map/
           
+          echo "Copying CNAME for custom domain..."
+          cp CNAME _site/CNAME
+          
           echo "===== Final structure ====="
           find _site/ -type f
         
