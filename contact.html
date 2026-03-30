@@ -187,25 +187,28 @@
         <!-- Contact Form (simplified) -->
         <div class="contact-form-card fade-in">
           <form id="contact-form" novalidate>
+            <!-- Honeypot spam trap -->
+            <input type="checkbox" name="botcheck" style="display:none!important" tabindex="-1" autocomplete="off">
             <div class="form-row">
               <div class="form-group">
-                <label for="contact-name">Name</label>
-                <input type="text" id="contact-name" name="name" placeholder="John Doe" required>
+                <label for="contact-name">Name <span style="color:#ef4444">*</span></label>
+                <input type="text" id="contact-name" name="name" placeholder="John Doe" required maxlength="100">
               </div>
               <div class="form-group">
-                <label for="contact-email">Email</label>
-                <input type="email" id="contact-email" name="email" placeholder="john@company.com" required>
+                <label for="contact-email">Email <span style="color:#ef4444">*</span></label>
+                <input type="email" id="contact-email" name="email" placeholder="john@company.com" required maxlength="254">
               </div>
             </div>
             <div class="form-group">
               <label for="contact-subject">Subject</label>
-              <input type="text" id="contact-subject" name="subject" placeholder="How can we help?">
+              <input type="text" id="contact-subject" name="subject" placeholder="How can we help?" maxlength="200">
             </div>
             <div class="form-group">
-              <label for="contact-message">Message</label>
-              <textarea id="contact-message" name="message" placeholder="Tell us about your project or challenge..." rows="5"></textarea>
+              <label for="contact-message">Message <span style="color:#ef4444">*</span></label>
+              <textarea id="contact-message" name="message" placeholder="Tell us about your project or challenge..." rows="5" required maxlength="5000"></textarea>
             </div>
-            <button type="submit" class="btn btn-primary" style="width:100%;">Send Message</button>
+            <div id="contact-form-status" role="alert" aria-live="polite"></div>
+            <button type="submit" class="btn btn-primary" style="width:100%;" id="contact-form-btn">Send Message</button>
           </form>
         </div>
 
@@ -220,7 +223,7 @@
             </div>
             <div class="contact-info-text">
               <h4>Email</h4>
-              <a href="mailto:ysalem2404@gmail.com">ysalem2404@gmail.com</a>
+              <a href="mailto:info@thalassa-us.com">info@thalassa-us.com</a>
             </div>
           </div>
           <div class="contact-info-item">
@@ -336,7 +339,7 @@
         <div class="footer-col">
           <h4>Contact</h4>
           <ul role="list">
-            <li><a href="mailto:ysalem2404@gmail.com">ysalem2404@gmail.com</a></li>
+            <li><a href="mailto:info@thalassa-us.com">info@thalassa-us.com</a></li>
             <li><a href="tel:+15552428">(555) AI-AUTO</a></li>
             <li><a href="https://github.com/ysalem2404/ai-automation-hub" target="_blank" rel="noopener noreferrer">GitHub</a></li>
           </ul>

@@ -248,26 +248,28 @@
       </div>
       <div class="intake-card fade-in">
         <form id="intake-form" novalidate>
+          <!-- Honeypot spam trap -->
+          <input type="checkbox" name="botcheck" style="display:none!important" tabindex="-1" autocomplete="off">
           <!-- About You -->
           <div class="form-section-header">About You</div>
           <div class="form-row">
             <div class="form-group">
-              <label for="intake-name">Full Name</label>
-              <input type="text" id="intake-name" name="name" placeholder="John Doe" required>
+              <label for="intake-name">Full Name <span style="color:#ef4444">*</span></label>
+              <input type="text" id="intake-name" name="name" placeholder="John Doe" required maxlength="100">
             </div>
             <div class="form-group">
-              <label for="intake-email">Email</label>
-              <input type="email" id="intake-email" name="email" placeholder="john@company.com" required>
+              <label for="intake-email">Email <span style="color:#ef4444">*</span></label>
+              <input type="email" id="intake-email" name="email" placeholder="john@company.com" required maxlength="254">
             </div>
           </div>
           <div class="form-row">
             <div class="form-group">
               <label for="intake-company">Company / Organization</label>
-              <input type="text" id="intake-company" name="company" placeholder="Acme Corp">
+              <input type="text" id="intake-company" name="company" placeholder="Acme Corp" maxlength="200">
             </div>
             <div class="form-group">
               <label for="intake-role">Job Title / Role</label>
-              <input type="text" id="intake-role" name="role" placeholder="CTO">
+              <input type="text" id="intake-role" name="role" placeholder="CTO" maxlength="100">
             </div>
           </div>
 
@@ -353,9 +355,10 @@
           </div>
           <div class="form-group">
             <label for="intake-description">Brief Description</label>
-            <textarea id="intake-description" name="description" placeholder="Tell us about your project or challenge..." rows="4"></textarea>
+            <textarea id="intake-description" name="description" placeholder="Tell us about your project or challenge..." rows="4" maxlength="5000"></textarea>
           </div>
-          <button type="submit" class="btn btn-primary" style="width:100%;">Submit Inquiry</button>
+          <div id="intake-form-status" role="alert" aria-live="polite"></div>
+          <button type="submit" class="btn btn-primary" style="width:100%;" id="intake-form-btn">Submit Inquiry</button>
         </form>
       </div>
     </div>
@@ -563,7 +566,7 @@
         <div class="footer-col">
           <h4>Contact</h4>
           <ul role="list">
-            <li><a href="mailto:ysalem2404@gmail.com">ysalem2404@gmail.com</a></li>
+            <li><a href="mailto:info@thalassa-us.com">info@thalassa-us.com</a></li>
             <li><a href="tel:+15552428">(555) AI-AUTO</a></li>
             <li><a href="https://github.com/ysalem2404/ai-automation-hub" target="_blank" rel="noopener noreferrer">GitHub</a></li>
           </ul>

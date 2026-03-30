@@ -218,10 +218,10 @@
       return 'Our Vendor & Supplier Portal is open for technology partners! Visit the Vendor Portal section on our site to register and submit your vendor application. We welcome Technology Providers, Consulting Firms, Hardware & Software Vendors, and more.';
     }
     if (/consult|meeting|call|schedule|book/.test(input)) {
-      return "I'd love to set up a consultation! Please fill out our Let's Connect form or email us at ysalem2404@gmail.com. Our team typically responds within 24 hours to schedule a discovery call.";
+      return "I'd love to set up a consultation! Please fill out our Let's Connect form or email us at info@thalassa-us.com. Our team typically responds within 24 hours to schedule a discovery call.";
     }
     if (/pric|cost|quote/.test(input)) {
-      return 'Our solutions are tailored to each enterprise, so pricing varies based on scope and requirements. Please reach out via our Let\'s Connect form or email ysalem2404@gmail.com for a customized quote.';
+      return 'Our solutions are tailored to each enterprise, so pricing varies based on scope and requirements. Please reach out via our Let\'s Connect form or email info@thalassa-us.com for a customized quote.';
     }
     if (/hello|hi|hey|good/.test(input)) {
       return 'Hello! Welcome to Nexus Flow. I can help you explore our IoT, Cybersecurity, AI Datacenter, and ERP services, or tell you about our live Demos and Vendor Portal. What area interests you most?';
@@ -230,26 +230,232 @@
   }
 
   /* ========================================
-     CONTACT FORM (simulated)
+     WEB3FORMS CONFIGURATION
+     ======================================== */
+
+  const WEB3FORMS_KEY = 'd7fc1aad-3e1c-440d-8d4d-0294915419c6';
+  const WEB3FORMS_ENDPOINT = 'https://api.web3forms.com/submit';
+
+  // Rate-limit tracker: { formId: timestamp }
+  const formCooldowns = {};
+  const COOLDOWN_SECONDS = 60;
+
+  /* ========================================
+     SHARED: Form Utilities
+     ======================================== */
+
+  function stripHtml(str) {
+    var tmp = document.createElement('div');
+    tmp.textContent = str;
+    return tmp.textContent;
+  }
+
+  function isValidEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
+
+  function showFormStatus(statusEl, message, isError) {
+    statusEl.textContent = message;
+    statusEl.style.padding = '12px 16px';
+    statusEl.style.borderRadius = '8px';
+    statusEl.style.marginBottom = '12px';
+    statusEl.style.fontSize = '0.9rem';
+    statusEl.style.fontWeight = '500';
+    if (isError) {
+      statusEl.style.background = 'rgba(239,68,68,0.15)';
+      statusEl.style.color = '#ef4444';
+      statusEl.style.border = '1px solid rgba(239,68,68,0.3)';
+    } else {
+      statusEl.style.background = 'rgba(34,197,94,0.15)';
+      statusEl.style.color = '#22c55e';
+      statusEl.style.border = '1px solid rgba(34,197,94,0.3)';
+    }
+  }
+
+  function clearFormStatus(statusEl) {
+    statusEl.textContent = '';
+    statusEl.style.padding = '';
+    statusEl.style.background = '';
+    statusEl.style.color = '';
+    statusEl.style.border = '';
+    statusEl.style.marginBottom = '';
+  }
+
+  function setButtonLoading(btn, loading, originalText) {
+    if (loading) {
+      btn.disabled = true;
+      btn.dataset.originalText = btn.textContent;
+      btn.textContent = 'Sending...';
+      btn.style.opacity = '0.7';
+      btn.style.cursor = 'not-allowed';
+    } else {
+      btn.disabled = false;
+      btn.textContent = originalText || btn.dataset.originalText || 'Submit';
+      btn.style.opacity = '';
+      btn.style.cursor = '';
+    }
+  }
+
+  function startCooldown(formId, btn, originalText) {
+    var remaining = COOLDOWN_SECONDS;
+    formCooldowns[formId] = Date.now();
+    btn.disabled = true;
+    btn.style.opacity = '0.7';
+    btn.style.cursor = 'not-allowed';
+    var interval = setInterval(function() {
+      remaining--;
+      if (remaining <= 0) {
+        clearInterval(interval);
+        btn.disabled = false;
+        btn.textContent = originalText;
+        btn.style.opacity = '';
+        btn.style.cursor = '';
+        delete formCooldowns[formId];
+      } else {
+        btn.textContent = 'Submit again in ' + remaining + 's';
+      }
+    }, 1000);
+  }
+
+  function isCoolingDown(formId) {
+    if (!formCooldowns[formId]) return false;
+    return (Date.now() - formCooldowns[formId]) < COOLDOWN_SECONDS * 1000;
+  }
+
+  function validateRequiredFields(form) {
+    var errors = [];
+    var nameField = form.querySelector('input[name="name"]');
+    var emailField = form.querySelector('input[name="email"]');
+    var messageField = form.querySelector('textarea[name="message"]');
+
+    if (nameField && !nameField.value.trim()) {
+      errors.push('Name is required.');
+      nameField.style.borderColor = '#ef4444';
+    } else if (nameField) {
+      nameField.style.borderColor = '';
+    }
+
+    if (emailField && !emailField.value.trim()) {
+      errors.push('Email is required.');
+      emailField.style.borderColor = '#ef4444';
+    } else if (emailField && !isValidEmail(emailField.value.trim())) {
+      errors.push('Please enter a valid email address.');
+      emailField.style.borderColor = '#ef4444';
+    } else if (emailField) {
+      emailField.style.borderColor = '';
+    }
+
+    if (messageField && !messageField.value.trim()) {
+      errors.push('Message is required.');
+      messageField.style.borderColor = '#ef4444';
+    } else if (messageField) {
+      messageField.style.borderColor = '';
+    }
+
+    return errors;
+  }
+
+  async function submitToWeb3Forms(form, formId, emailSubject, originalBtnText) {
+    var statusEl = document.getElementById(formId + '-status');
+    var btn = document.getElementById(formId + '-btn') || form.querySelector('button[type="submit"]');
+
+    // Clear previous status
+    if (statusEl) clearFormStatus(statusEl);
+
+    // Check cooldown
+    if (isCoolingDown(formId)) {
+      if (statusEl) showFormStatus(statusEl, 'Please wait before submitting again.', true);
+      return;
+    }
+
+    // Validate
+    var errors = validateRequiredFields(form);
+    if (errors.length > 0) {
+      if (statusEl) showFormStatus(statusEl, errors.join(' '), true);
+      return;
+    }
+
+    // Collect form data and sanitize
+    var formData = new FormData(form);
+    var jsonData = {
+      access_key: WEB3FORMS_KEY,
+      subject: emailSubject,
+      from_name: 'Thalassa US Website'
+    };
+
+    formData.forEach(function(value, key) {
+      if (key === 'botcheck') {
+        jsonData[key] = value;
+      } else if (key === 'service_interest') {
+        // Handle multiple checkboxes
+        if (!jsonData[key]) jsonData[key] = [];
+        if (Array.isArray(jsonData[key])) {
+          jsonData[key].push(stripHtml(value));
+        }
+      } else {
+        jsonData[key] = stripHtml(value);
+      }
+    });
+
+    // Convert service_interest array to string
+    if (Array.isArray(jsonData.service_interest)) {
+      jsonData.service_interest = jsonData.service_interest.join(', ');
+    }
+
+    // Submit
+    setButtonLoading(btn, true);
+
+    try {
+      var response = await fetch(WEB3FORMS_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify(jsonData)
+      });
+      var result = await response.json();
+
+      if (result.success) {
+        if (statusEl) showFormStatus(statusEl, 'Message sent successfully. We\'ll get back to you soon!', false);
+        setButtonLoading(btn, false, originalBtnText);
+        startCooldown(formId, btn, originalBtnText);
+        setTimeout(function() {
+          form.reset();
+          // Clear validation borders
+          form.querySelectorAll('input, textarea').forEach(function(el) { el.style.borderColor = ''; });
+        }, 2000);
+        setTimeout(function() {
+          if (statusEl) clearFormStatus(statusEl);
+        }, 8000);
+      } else {
+        if (statusEl) showFormStatus(statusEl, 'Something went wrong. Please try again or email us directly.', true);
+        setButtonLoading(btn, false, originalBtnText);
+      }
+    } catch (err) {
+      if (statusEl) showFormStatus(statusEl, 'Network error. Please check your connection and try again.', true);
+      setButtonLoading(btn, false, originalBtnText);
+    }
+  }
+
+  /* ========================================
+     CONTACT FORM (Web3Forms)
      ======================================== */
 
   const contactForm = document.getElementById('contact-form');
   if (contactForm) {
-    contactForm.addEventListener('submit', (e) => {
+    contactForm.addEventListener('submit', function(e) {
       e.preventDefault();
-      simulateFormSubmit(contactForm, 'Send Message');
+      submitToWeb3Forms(contactForm, 'contact-form', 'New Contact Form — thalassa-us.com', 'Send Message');
     });
   }
 
   /* ========================================
-     INTAKE FORM (simulated)
+     INTAKE FORM (Web3Forms)
      ======================================== */
 
   const intakeForm = document.getElementById('intake-form');
   if (intakeForm) {
-    intakeForm.addEventListener('submit', (e) => {
+    intakeForm.addEventListener('submit', function(e) {
       e.preventDefault();
-      simulateFormSubmit(intakeForm, 'Submit Inquiry');
+      submitToWeb3Forms(intakeForm, 'intake-form', 'New Project Inquiry — thalassa-us.com', 'Submit Inquiry');
     });
   }
 
@@ -337,22 +543,24 @@
   }
 
   /* ========================================
-     SHARED: Simulate Form Submission
+     VENDOR FORMS: Demo Mode Simulation
      ======================================== */
 
   function simulateFormSubmit(form, originalLabel) {
     const btn = form.querySelector('button[type="submit"]');
     if (!btn) return;
     const prevText = btn.textContent;
-    btn.textContent = 'Sent! \u2713';
-    btn.style.background = 'var(--color-success)';
+    btn.textContent = 'Demo Mode — Coming Soon';
+    btn.style.background = 'rgba(234,179,8,0.3)';
+    btn.style.color = '#eab308';
     btn.disabled = true;
     setTimeout(() => {
       btn.textContent = originalLabel || prevText;
       btn.style.background = '';
+      btn.style.color = '';
       btn.disabled = false;
       form.reset();
-    }, 2500);
+    }, 3000);
   }
 
   /* ========================================
