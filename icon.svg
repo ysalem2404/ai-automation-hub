@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <defs>
+    <linearGradient id="tG" x1="0" y1="0" x2="0.5" y2="1">
+      <stop offset="0%" stop-color="#21B0B5"/>
+      <stop offset="100%" stop-color="#148A8E"/>
+    </linearGradient>
+    <linearGradient id="nG" x1="0.5" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1E4A6E"/>
+      <stop offset="100%" stop-color="#112D48"/>
+    </linearGradient>
+    <clipPath id="topHalf">
+      <rect x="0" y="0" width="200" height="52"/>
+    </clipPath>
+    <clipPath id="botHalf">
+      <rect x="0" y="48" width="200" height="60"/>
+    </clipPath>
+  </defs>
+
+  <g transform="translate(2, 3)">
+    <!-- Left hexagonal ring (teal) -->
+    <path d="M8 48 L26 6 L66 6 L84 48 L66 90 L26 90 Z" fill="url(#tG)"/>
+    <path d="M20 48 L34 16 L58 16 L72 48 L58 80 L34 80 Z" fill="white"/>
+
+    <!-- Right hexagonal ring (navy) -->
+    <path d="M52 48 L70 6 L110 6 L128 48 L110 90 L70 90 Z" fill="url(#nG)"/>
+    <path d="M64 48 L78 16 L102 16 L116 48 L102 80 L78 80 Z" fill="white"/>
+
+    <!-- Weave: navy over teal at top -->
+    <g clip-path="url(#topHalf)">
+      <path d="M52 48 L70 6 L110 6 L128 48 L110 90 L70 90 Z" fill="url(#nG)"/>
+      <path d="M64 48 L78 16 L102 16 L116 48 L102 80 L78 80 Z" fill="white"/>
+    </g>
+
+    <!-- Weave: teal over navy at bottom -->
+    <g clip-path="url(#botHalf)">
+      <path d="M8 48 L26 6 L66 6 L84 48 L66 90 L26 90 Z" fill="url(#tG)"/>
+      <path d="M20 48 L34 16 L58 16 L72 48 L58 80 L34 80 Z" fill="white"/>
+    </g>
+  </g>
+</svg>
