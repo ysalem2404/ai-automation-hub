@@ -91,6 +91,13 @@ a:hover {
   flex-shrink: 0;
 }
 
+/* Logo background for dark mode visibility */
+[data-theme="dark"] .logo svg {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 6px;
+  padding: 3px;
+}
+
 .logo-text {
   font-family: var(--font-display);
   font-size: var(--text-lg);
