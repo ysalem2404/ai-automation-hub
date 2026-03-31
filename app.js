@@ -550,75 +550,15 @@
   });
 
   /* ========================================
-     VENDOR SIGN IN / REGISTER (simulated)
-     ======================================== */
-
-  const vendorAuth = document.getElementById('vendorAuth');
-  const vendorInfoForm = document.getElementById('vendorInfoForm');
-  const vendorSigninForm = document.getElementById('vendor-signin-form');
-  const vendorRegisterForm = document.getElementById('vendor-register-form');
-  const ssoSignin = document.getElementById('sso-signin');
-  const ssoRegister = document.getElementById('sso-register');
-
-  function showVendorForm() {
-    if (vendorAuth && vendorInfoForm) {
-      vendorAuth.style.display = 'none';
-      vendorInfoForm.style.display = 'block';
-    }
-  }
-
-  if (vendorSigninForm) {
-    vendorSigninForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      showVendorForm();
-    });
-  }
-
-  if (vendorRegisterForm) {
-    vendorRegisterForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      showVendorForm();
-    });
-  }
-
-  if (ssoSignin) {
-    ssoSignin.addEventListener('click', showVendorForm);
-  }
-  if (ssoRegister) {
-    ssoRegister.addEventListener('click', showVendorForm);
-  }
-
-  /* ========================================
-     VENDOR INFO FORM (simulated)
+     VENDOR APPLICATION FORM (Web3Forms)
      ======================================== */
 
   const vendorInfoFormEl = document.getElementById('vendor-info-form-el');
   if (vendorInfoFormEl) {
-    vendorInfoFormEl.addEventListener('submit', (e) => {
+    vendorInfoFormEl.addEventListener('submit', function(e) {
       e.preventDefault();
-      simulateFormSubmit(vendorInfoFormEl, 'Submit Vendor Application');
+      submitToWeb3Forms(vendorInfoFormEl, 'vendor-form', 'New Vendor Application — thalassa-us.com', 'Submit Vendor Application');
     });
-  }
-
-  /* ========================================
-     VENDOR FORMS: Demo Mode Simulation
-     ======================================== */
-
-  function simulateFormSubmit(form, originalLabel) {
-    const btn = form.querySelector('button[type="submit"]');
-    if (!btn) return;
-    const prevText = btn.textContent;
-    btn.textContent = 'Demo Mode — Coming Soon';
-    btn.style.background = 'rgba(234,179,8,0.3)';
-    btn.style.color = '#eab308';
-    btn.disabled = true;
-    setTimeout(() => {
-      btn.textContent = originalLabel || prevText;
-      btn.style.background = '';
-      btn.style.color = '';
-      btn.disabled = false;
-      form.reset();
-    }, 3000);
   }
 
   /* ========================================
