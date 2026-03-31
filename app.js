@@ -1,4 +1,4 @@
-/* app.js — Nexus Flow v2 Interactivity (Multi-page) */
+/* app.js — Thalassa US v2 Interactivity (Multi-page) */
 
 (function () {
   'use strict';
@@ -224,7 +224,7 @@
       return 'Our solutions are tailored to each enterprise, so pricing varies based on scope and requirements. Please reach out via our Let\'s Connect form or email info@thalassa-us.com for a customized quote.';
     }
     if (/hello|hi|hey|good/.test(input)) {
-      return 'Hello! Welcome to Nexus Flow. I can help you explore our IoT, Cybersecurity, AI Datacenter, and ERP services, or tell you about our live Demos and Vendor Portal. What area interests you most?';
+      return 'Hello! Welcome to Thalassa US. I can help you explore our IoT, Cybersecurity, AI Datacenter, and ERP services, or tell you about our live Demos and Vendor Portal. What area interests you most?';
     }
     return "Thank you for your interest! I can help with information about our IoT & Automation, Cybersecurity, AI Datacenter, and ERP services. I can also point you to our live Demos or Vendor Portal. Feel free to ask about any of these, or I can help you schedule a consultation with our team.";
   }
