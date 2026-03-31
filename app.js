@@ -420,6 +420,14 @@
       return;
     }
 
+    // Verify hCaptcha was completed
+    var captchaEl = form.querySelector('.h-captcha iframe');
+    var captchaResponse = form.querySelector('[name="h-captcha-response"]');
+    if (captchaEl && (!captchaResponse || !captchaResponse.value)) {
+      if (statusEl) showFormStatus(statusEl, 'Please complete the CAPTCHA verification.', true);
+      return;
+    }
+
     // Collect form data and sanitize
     var formData = new FormData(form);
     var jsonData = {
@@ -429,7 +437,7 @@
     };
 
     formData.forEach(function(value, key) {
-      if (key === 'botcheck') {
+      if (key === 'botcheck' || key === 'h-captcha-response' || key === 'g-recaptcha-response') {
         jsonData[key] = value;
       } else if (key === 'service_interest') {
         // Handle multiple checkboxes
@@ -467,6 +475,10 @@
           form.reset();
           // Clear validation borders
           form.querySelectorAll('input, textarea').forEach(function(el) { el.style.borderColor = ''; });
+          // Reset hCaptcha if present
+          if (typeof hcaptcha !== 'undefined') {
+            try { hcaptcha.reset(); } catch(e) {}
+          }
         }, 2000);
         setTimeout(function() {
           if (statusEl) clearFormStatus(statusEl);

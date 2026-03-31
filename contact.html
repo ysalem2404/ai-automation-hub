@@ -17,7 +17,7 @@
 <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
 <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
 <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=()">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://cdn.tailwindcss.com https://api.web3forms.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://api.web3forms.com; frame-ancestors 'self';">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://cdn.tailwindcss.com https://api.web3forms.com https://web3forms.com https://js.hcaptcha.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://newassets.hcaptcha.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://api.web3forms.com; frame-ancestors 'self'; frame-src 'self' https://newassets.hcaptcha.com https://*.hcaptcha.com;">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/x-icon" href="./favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32.png">
@@ -205,6 +205,7 @@
               <textarea id="contact-message" name="message" placeholder="Tell us about your project or challenge..." rows="5" required maxlength="5000"></textarea>
             </div>
             <div id="contact-form-status" role="alert" aria-live="polite"></div>
+            <div class="h-captcha" data-captcha="true"></div>
             <button type="submit" class="btn btn-primary" style="width:100%;" id="contact-form-btn">Send Message</button>
           </form>
         </div>
@@ -345,5 +346,6 @@
   </footer>
 
   <script src="./app.js"></script>
+  <script src="https://web3forms.com/client/script.js" async defer></script>
 </body>
 </html>
