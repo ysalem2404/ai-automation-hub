@@ -170,7 +170,7 @@
   }
 
   function sendMessage() {
-    const text = chatInput.value.trim();
+    const text = chatInput.value.trim().substring(0, 500);
     if (!text) return;
 
     appendMessage(text, 'user');
@@ -245,13 +245,44 @@
      ======================================== */
 
   function stripHtml(str) {
+    if (typeof str !== 'string') return '';
     var tmp = document.createElement('div');
     tmp.textContent = str;
     return tmp.textContent;
   }
 
+  function sanitizeInput(str, maxLen) {
+    if (typeof str !== 'string') return '';
+    // Strip HTML tags
+    var clean = stripHtml(str.trim());
+    // Remove null bytes
+    clean = clean.replace(/\0/g, '');
+    // Enforce max length
+    if (maxLen && clean.length > maxLen) {
+      clean = clean.substring(0, maxLen);
+    }
+    return clean;
+  }
+
+  // Field length limits
+  var FIELD_LIMITS = {
+    name: 100,
+    email: 254,
+    phone: 20,
+    company: 150,
+    message: 5000,
+    subject: 200,
+    default: 500
+  };
+
   function isValidEmail(email) {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    if (!email || email.length > 254) return false;
+    return /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/.test(email);
+  }
+
+  function isValidPhone(phone) {
+    if (!phone) return true; // phone is optional
+    return /^[+\d\s().-]{7,20}$/.test(phone);
   }
 
   function showFormStatus(statusEl, message, isError) {
@@ -327,9 +358,13 @@
     var nameField = form.querySelector('input[name="name"]');
     var emailField = form.querySelector('input[name="email"]');
     var messageField = form.querySelector('textarea[name="message"]');
+    var phoneField = form.querySelector('input[name="phone"]');
 
     if (nameField && !nameField.value.trim()) {
       errors.push('Name is required.');
+      nameField.style.borderColor = '#ef4444';
+    } else if (nameField && nameField.value.trim().length > FIELD_LIMITS.name) {
+      errors.push('Name is too long (max ' + FIELD_LIMITS.name + ' characters).');
       nameField.style.borderColor = '#ef4444';
     } else if (nameField) {
       nameField.style.borderColor = '';
@@ -345,8 +380,18 @@
       emailField.style.borderColor = '';
     }
 
+    if (phoneField && phoneField.value.trim() && !isValidPhone(phoneField.value.trim())) {
+      errors.push('Please enter a valid phone number.');
+      phoneField.style.borderColor = '#ef4444';
+    } else if (phoneField) {
+      phoneField.style.borderColor = '';
+    }
+
     if (messageField && !messageField.value.trim()) {
       errors.push('Message is required.');
+      messageField.style.borderColor = '#ef4444';
+    } else if (messageField && messageField.value.trim().length > FIELD_LIMITS.message) {
+      errors.push('Message is too long (max ' + FIELD_LIMITS.message + ' characters).');
       messageField.style.borderColor = '#ef4444';
     } else if (messageField) {
       messageField.style.borderColor = '';
@@ -390,10 +435,11 @@
         // Handle multiple checkboxes
         if (!jsonData[key]) jsonData[key] = [];
         if (Array.isArray(jsonData[key])) {
-          jsonData[key].push(stripHtml(value));
+          jsonData[key].push(sanitizeInput(value, FIELD_LIMITS.default));
         }
       } else {
-        jsonData[key] = stripHtml(value);
+        var limit = FIELD_LIMITS[key] || FIELD_LIMITS.default;
+        jsonData[key] = sanitizeInput(value, limit);
       }
     });
 
