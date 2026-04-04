@@ -4,7 +4,7 @@ import { resolve } from 'path'
 
 export default defineConfig({
   plugins: [react()],
-  base: '/ai-automation-hub/tools/data-matcher/',
+  base: '/tools/data-matcher/',
   build: {
     outDir: 'dist',
     emptyOutDir: true,
