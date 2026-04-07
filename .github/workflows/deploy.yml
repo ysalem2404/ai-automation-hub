@@ -38,6 +38,7 @@ jobs:
           mkdir -p _site/tools/data-matcher
           mkdir -p _site/tools/med-equipment-map
           mkdir -p _site/tools/ai-datacenter-map
+          mkdir -p _site/tools/yaz-pulse
           
           echo "Copying Thalassa US site pages..."
           cp favicon.ico favicon-32.png apple-touch-icon.png og-image.png logo-128.png _site/ 2>/dev/null || true
@@ -61,6 +62,9 @@ jobs:
           
           echo "Copying AI Datacenter Map..."
           cp -r tools/ai-datacenter-map/. _site/tools/ai-datacenter-map/
+          
+          echo "Copying Yaz Pulse Intelligence Feed..."
+          cp -r tools/yaz-pulse/. _site/tools/yaz-pulse/
           
           echo "Copying CNAME for custom domain..."
           cp CNAME _site/CNAME
