@@ -1,343 +1,59 @@
-<!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<!doctype html>
+<html lang="en">
 <head>
-<!--
-   ______                            __
-  / ____/___  ____ ___  ____  __  __/ /____  _____
- / /   / __ \/ __ `__ \/ __ \/ / / / __/ _ \/ ___/
-/ /___/ /_/ / / / / / / /_/ / /_/ / /_/  __/ /
-\____/\____/_/ /_/ /_/ .___/\__,_/\__/\___/_/
-                    /_/
--->
-
-
-<meta charset="UTF-8">
-<!-- Security Headers -->
-<meta http-equiv="X-Content-Type-Options" content="nosniff">
-<meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
-<meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
-<meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=()">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://cdn.tailwindcss.com https://api.web3forms.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://api.web3forms.com; frame-ancestors 'self';">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="color-scheme" content="light dark">
+<meta name="description" content="Thalassa US is a founder-led cybersecurity and AI advisory firm. One accountable lead, vetted partners where scope needs them, and scope discipline throughout.">
 <link rel="icon" type="image/x-icon" href="./favicon.ico">
-<link rel="icon" type="image/png" sizes="32x32" href="./favicon-32.png">
-<link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
-<meta property="og:image" content="https://thalassa-us.com/og-image.png">
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="Thalassa US">
 <title>About — Thalassa US</title>
-<meta name="description" content="Learn about Thalassa US — your trusted technology partner for IoT, Cybersecurity, AI Datacenter, and ERP solutions.">
-
-<!-- Google Fonts: DM Serif Display + DM Sans -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&family=DM+Serif+Display&display=swap" rel="stylesheet">
-
-<link rel="stylesheet" href="./base.css">
-<link rel="stylesheet" href="./style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:light dark;--page:#f3f6f4;--paper:#fff;--ink:#08242b;--muted:#53666a;--line:#bdcbc8;--strong:#7b918e;--navy:#061e25;--navy2:#0a2b33;--cyan:#45edca;--orange:#ff6b3d;--cream:#eef1e7;--shadow:0 28px 80px rgba(3,29,35,.14)}
+@media(prefers-color-scheme:dark){:root{--page:#071a20;--paper:#0b272f;--ink:#eef8f5;--muted:#a7bbb7;--line:#2c4b51;--strong:#58737a;--navy:#031317;--navy2:#0b2a32;--cyan:#55ebc9;--orange:#ff7951;--cream:#152c2c;--shadow:0 28px 80px rgba(0,0,0,.3)}}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--page);color:var(--ink);font:400 16px/1.55 "Manrope",sans-serif;overflow-x:hidden}a{color:inherit}h1,h2,h3,p{margin-top:0}.wrap{width:min(1220px,calc(100% - 56px));margin-inline:auto}.mono{font-family:"DM Mono",monospace}.shell{overflow:clip}
+.topbar{position:absolute;z-index:4;top:0;left:0;right:0;color:#dcebe7}.topbar-in{min-height:82px;display:flex;justify-content:flex-end;align-items:center;gap:28px;border-bottom:1px solid rgba(170,217,207,.25)}.topbar a{text-decoration:none;font-size:13px}.topbar a:not(.top-cta):not(.brand){color:#a9c2bd}.topbar a:hover{color:#fff}.top-cta{display:inline-flex;align-items:center;min-height:40px;padding:0 14px;border:1px solid #58767b;font-weight:700}.brand{display:inline-flex!important;align-items:center;gap:11px;margin-right:auto}.brand-mark{display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;background:#eef1e7;border-radius:11px;flex:none}.brand-mark svg{width:29px;height:25px;display:block}.brand-name{font-weight:800;font-size:15px;letter-spacing:.015em;color:#f2faf8;white-space:nowrap}
+.hero{background:var(--navy);color:#f4fbf9;padding:170px 0 110px}.kicker{display:flex;align-items:center;gap:12px;margin-bottom:32px;color:var(--cyan);font:500 12px/1.4 "DM Mono",monospace}.kicker:before{content:"";width:34px;height:2px;background:var(--orange)}h1{max-width:900px;margin-bottom:30px;font-size:clamp(54px,7.6vw,108px);line-height:.9;letter-spacing:-.06em;font-weight:800}.hero p.lead{max-width:700px;color:#b7cbc6;font-size:clamp(18px,2vw,22px);line-height:1.5;margin-bottom:0}
+.story{background:var(--paper);padding:100px 0}.story-grid{display:grid;grid-template-columns:280px minmax(0,1fr)}.story-label{padding:8px 52px 0 0;border-right:1px solid var(--line);color:var(--muted);font:500 11px/1.5 "DM Mono",monospace}.story-label strong{display:block;margin-bottom:14px;color:var(--orange);font-size:48px;line-height:1}.story-copy{padding:4px 0 0 72px}.story-copy p{max-width:720px;color:var(--muted);font-size:19px;margin-bottom:26px}.story-copy p strong{color:var(--ink)}
+.scope{background:var(--cream);padding:100px 0}.scope h2{margin-bottom:16px;font-size:clamp(36px,4.6vw,60px);line-height:1;letter-spacing:-.045em}.scope>p{max-width:640px;color:var(--muted);font-size:17px;margin-bottom:56px}.scope-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px}.scope-col{padding-top:26px;border-top:2px solid var(--ink)}.scope-col h3{font:500 12px "DM Mono",monospace;margin-bottom:22px;letter-spacing:.04em}.scope-col.yes h3{color:var(--ink)}.scope-col.no h3{color:var(--orange)}.scope-col ul{list-style:none;margin:0;padding:0}.scope-col li{padding:13px 0;border-top:1px solid var(--line);font-size:15px}.scope-col li span{display:block;color:var(--muted);font-size:13px;margin-top:3px}
+.model{background:var(--navy);color:#f0faf7;padding:100px 0}.model h2{max-width:800px;margin-bottom:24px;font-size:clamp(36px,4.6vw,60px);line-height:1;letter-spacing:-.045em}.model>p{max-width:680px;color:#aac2bc;font-size:18px;margin-bottom:56px}.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:40px}.step{padding-top:22px;border-top:1px solid #315159}.step b{display:block;color:var(--orange);font:500 11px "DM Mono",monospace;margin-bottom:10px}.step strong{display:block;font-size:18px;margin-bottom:8px}.step span{color:#91ada7;font-size:14px}
+.closing{background:var(--page);padding:100px 0 60px}.closing h2{max-width:880px;margin-bottom:36px;font-size:clamp(44px,6vw,84px);line-height:.94;letter-spacing:-.055em}.action{display:inline-flex;align-items:center;justify-content:space-between;gap:24px;min-height:54px;padding:0 18px;text-decoration:none;font-weight:700;min-width:274px;background:var(--cyan);color:#042127}.footer{display:flex;justify-content:space-between;gap:30px;flex-wrap:wrap;margin-top:80px;padding-top:28px;border-top:1px solid var(--line);color:var(--muted);font:400 11px "DM Mono",monospace}
+@media(max-width:920px){.story-grid{grid-template-columns:1fr}.story-label{border-right:0;padding:0 0 24px}.story-copy{padding:0}.scope-grid{grid-template-columns:1fr}.steps{grid-template-columns:1fr}}
+@media(max-width:680px){.topbar a:not(.top-cta):not(.brand){display:none}.hero{padding:150px 0 80px}.story,.scope,.model{padding:72px 0}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
 </head>
 <body>
-
-  <!-- ===== HEADER / NAVIGATION ===== -->
-  <header class="site-header" role="banner">
-    <div class="header-inner">
-      <!-- Logo -->
-      <a href="./index.html" class="logo" aria-label="Thalassa US — Home">
-        <svg viewBox="0 0 300 260" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="width:38px;height:33px;">
-          <path d="M150 10 L240 35 Q248 38 248 46 L244 115 Q238 178 150 218 Q62 178 56 115 L52 46 Q52 38 60 35 Z" fill="none" stroke="#1E3A5F" stroke-width="10" stroke-linejoin="round"/>
-          <path d="M76 112 Q102 68 150 62 Q198 68 226 112" fill="none" stroke="#1E3A5F" stroke-width="12" stroke-linecap="round"/>
-          <path d="M88 118 Q120 152 150 155 Q180 152 212 118" fill="none" stroke="#0D9488" stroke-width="7" stroke-linecap="round"/>
-          <path d="M127 92 L148 79 M127 92 L127 118 L148 131 L169 118 L169 92" fill="none" stroke="#F59E0B" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
-          <circle cx="148" cy="106" r="10" fill="#F59E0B"/>
-          <line x1="230" y1="110" x2="262" y2="96" stroke="#1E3A5F" stroke-width="3.5"/>
-          <circle cx="266" cy="94" r="5.5" fill="none" stroke="#1E3A5F" stroke-width="3.5"/>
-        </svg>
-        <span class="logo-text">Thalassa US</span>
-      </a>
-
-      <!-- Desktop Navigation -->
-      <nav class="main-nav" role="navigation" aria-label="Main navigation">
-        <a href="./index.html" class="nav-link">Home</a>
-        <div class="nav-dropdown" role="navigation" aria-label="Services submenu">
-          <a href="./index.html#services" class="nav-link dropdown-trigger">
-            Services
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
-          </a>
-          <div class="dropdown-menu" role="menu">
-            <div class="dropdown-section">
-              <h4>IoT & Automation</h4>
-              <ul role="list">
-                <li><a href="./index.html#services" role="menuitem">Smart Building Automation</a></li>
-                <li><a href="./index.html#services" role="menuitem">Industrial IoT</a></li>
-                <li><a href="./index.html#services" role="menuitem">Sensor Networks</a></li>
-                <li><a href="./index.html#services" role="menuitem">Remote Monitoring</a></li>
-              </ul>
-            </div>
-            <div class="dropdown-section">
-              <h4>Cybersecurity</h4>
-              <ul role="list">
-                <li><a href="./index.html#services" role="menuitem">SOC</a></li>
-                <li><a href="./index.html#services" role="menuitem">Pen Testing</a></li>
-                <li><a href="./index.html#services" role="menuitem">Compliance & GRC</a></li>
-                <li><a href="./index.html#services" role="menuitem">Incident Response</a></li>
-              </ul>
-            </div>
-            <div class="dropdown-section">
-              <h4>AI Datacenter</h4>
-              <ul role="list">
-                <li><a href="./index.html#services" role="menuitem">AI Infrastructure</a></li>
-                <li><a href="./index.html#services" role="menuitem">GPU Clusters</a></li>
-                <li><a href="./index.html#services" role="menuitem">Edge Computing</a></li>
-                <li><a href="./index.html#services" role="menuitem">Data Pipelines</a></li>
-              </ul>
-            </div>
-            <div class="dropdown-section">
-              <h4>Small Business ERP</h4>
-              <ul role="list">
-                <li><a href="./index.html#services" role="menuitem">SAP B1</a></li>
-                <li><a href="./index.html#services" role="menuitem">Custom ERP</a></li>
-                <li><a href="./index.html#services" role="menuitem">Workflow Automation</a></li>
-                <li><a href="./index.html#services" role="menuitem">BI & Analytics</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <a href="./demos.html" class="nav-link">Demos</a>
-        <a href="./engage.html" class="nav-link">Engage</a>
-        <a href="./about.html" class="nav-link active">About</a>
-        <a href="./contact.html" class="nav-link">Contact</a>
-      </nav>
-
-      <!-- Header Actions -->
-      <div class="header-actions">
-        <button class="theme-toggle" data-theme-toggle aria-label="Switch to light mode">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-        </button>
-        <button class="hamburger" aria-label="Open menu" aria-expanded="false">
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
-      </div>
-    </div>
-
-    <!-- Mobile Navigation -->
-    <nav class="mobile-nav" role="navigation" aria-label="Mobile navigation">
-      <a href="./index.html" class="mobile-nav-link">Home</a>
-      <button class="mobile-dropdown-trigger" aria-expanded="false">
-        Services
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
-      </button>
-      <div class="mobile-dropdown-content">
-        <div class="mobile-dropdown-section">
-          <h4>IoT & Automation</h4>
-          <ul role="list">
-            <li><a href="./index.html#services">Smart Building Automation</a></li>
-            <li><a href="./index.html#services">Industrial IoT</a></li>
-            <li><a href="./index.html#services">Sensor Networks</a></li>
-            <li><a href="./index.html#services">Remote Monitoring</a></li>
-          </ul>
-        </div>
-        <div class="mobile-dropdown-section">
-          <h4>Cybersecurity</h4>
-          <ul role="list">
-            <li><a href="./index.html#services">SOC</a></li>
-            <li><a href="./index.html#services">Pen Testing</a></li>
-            <li><a href="./index.html#services">Compliance & GRC</a></li>
-            <li><a href="./index.html#services">Incident Response</a></li>
-          </ul>
-        </div>
-        <div class="mobile-dropdown-section">
-          <h4>AI Datacenter</h4>
-          <ul role="list">
-            <li><a href="./index.html#services">AI Infrastructure</a></li>
-            <li><a href="./index.html#services">GPU Clusters</a></li>
-            <li><a href="./index.html#services">Edge Computing</a></li>
-            <li><a href="./index.html#services">Data Pipelines</a></li>
-          </ul>
-        </div>
-        <div class="mobile-dropdown-section">
-          <h4>Small Business ERP</h4>
-          <ul role="list">
-            <li><a href="./index.html#services">SAP B1</a></li>
-            <li><a href="./index.html#services">Custom ERP</a></li>
-            <li><a href="./index.html#services">Workflow Automation</a></li>
-            <li><a href="./index.html#services">BI & Analytics</a></li>
-          </ul>
-        </div>
-      </div>
-      <a href="./demos.html" class="mobile-nav-link">Demos</a>
-      <a href="./engage.html" class="mobile-nav-link">Engage</a>
-      <a href="./about.html" class="mobile-nav-link">About</a>
-      <a href="./contact.html" class="mobile-nav-link">Contact</a>
-    </nav>
-  </header>
-
-  <!-- ===== ABOUT SECTION ===== -->
-  <section class="about section-padding" id="about">
-    <div class="container">
-      <div class="about-grid">
-        <div class="about-content fade-in">
-          <h2>Your Trusted Technology Partner</h2>
-          <p>Founded with a vision to bridge the gap between emerging technology and enterprise operations, <strong>Thalassa US</strong> has grown into a trusted partner for organizations navigating digital transformation.</p>
-          <p>With deep roots in <strong>government, healthcare, and enterprise sectors</strong>, we bring decade-long expertise in designing, deploying, and managing complex technology ecosystems. Our team of certified engineers, consultants, and architects works alongside your stakeholders to deliver measurable results.</p>
-          <p>From securing critical infrastructure to automating operational workflows, we combine strategic vision with hands-on execution. Our integrated approach ensures that your IoT, cybersecurity, AI, and ERP systems work in concert — not in silos.</p>
-        </div>
-        <div class="values-grid fade-in">
-          <div class="value-card">
-            <div class="value-card-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-              </svg>
-            </div>
-            <h4>Innovation</h4>
-            <p>Continuously exploring emerging technologies to keep our clients ahead of the curve.</p>
-          </div>
-          <div class="value-card">
-            <div class="value-card-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-              </svg>
-            </div>
-            <h4>Integrity</h4>
-            <p>Transparent communication and ethical practices in every engagement and decision.</p>
-          </div>
-          <div class="value-card">
-            <div class="value-card-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                <circle cx="9" cy="7" r="4"/>
-                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-              </svg>
-            </div>
-            <h4>Partnership</h4>
-            <p>We succeed when you succeed. Deep collaboration is the cornerstone of our approach.</p>
-          </div>
-          <div class="value-card">
-            <div class="value-card-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                <polyline points="22 4 12 14.01 9 11.01"/>
-              </svg>
-            </div>
-            <h4>Excellence</h4>
-            <p>Relentless pursuit of quality in design, delivery, and ongoing support.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== CLIENT SUCCESS STORIES (Gallery) ===== -->
-  <section class="gallery section-padding" id="gallery">
-    <div class="container">
-      <div class="gallery-header fade-in">
-        <h2 class="section-title">Client Success Stories</h2>
-        <p class="section-subtitle" style="margin-inline:auto;">Real-world outcomes from enterprises that trusted us to transform their operations</p>
-      </div>
-      <div class="gallery-grid">
-        <div class="gallery-card grad-1 fade-in">
-          <span class="gallery-card-label">Manufacturing IoT Deployment</span>
-        </div>
-        <div class="gallery-card grad-2 fade-in">
-          <span class="gallery-card-label">Healthcare Compliance</span>
-        </div>
-        <div class="gallery-card grad-3 fade-in">
-          <span class="gallery-card-label">AI Research Lab</span>
-        </div>
-        <div class="gallery-card grad-4 fade-in">
-          <span class="gallery-card-label">Retail ERP Launch</span>
-        </div>
-        <div class="gallery-card grad-5 fade-in">
-          <span class="gallery-card-label">Smart Campus Project</span>
-        </div>
-        <div class="gallery-card grad-6 fade-in">
-          <span class="gallery-card-label">Cyber Defense Center</span>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== CHAT WIDGET ===== -->
-  <button class="chat-toggle" id="chatToggle" aria-label="Open chat assistant">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-    </svg>
-  </button>
-
-  <div class="chat-panel" id="chatPanel" role="dialog" aria-label="Chat assistant">
-    <div class="chat-header">
-      <h3>Thalassa Assistant</h3>
-      <button class="chat-close" id="chatClose" aria-label="Close chat">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-        </svg>
-      </button>
-    </div>
-    <div class="chat-messages" id="chatMessages">
-      <div class="chat-message bot">Hi there! I'm your Thalassa US assistant. I can help you explore our IoT, Cybersecurity, AI Datacenter, and ERP services. You can also ask about our live Demos or Vendor Portal. How can I assist you today?</div>
-      <div class="chat-typing" id="chatTyping">
-        <div class="typing-dots">
-          <span></span><span></span><span></span>
-        </div>
-      </div>
-    </div>
-    <div class="chat-input-area">
-      <input type="text" class="chat-input" id="chatInput" placeholder="Type a message..." aria-label="Chat message">
-      <button class="chat-send" id="chatSend" aria-label="Send message">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
-        </svg>
-      </button>
-    </div>
-  </div>
-
-  <!-- ===== FOOTER ===== -->
-  <footer class="site-footer" role="contentinfo">
-    <div class="container">
-      <div class="footer-grid">
-        <div class="footer-col footer-about">
-          <h4>About Us</h4>
-          <p>Thalassa US delivers integrated technology solutions spanning IoT, cybersecurity, AI infrastructure, and enterprise resource planning for organizations worldwide.</p>
-          <div class="footer-social">
-            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="LinkedIn">
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-            </a>
-          </div>
-        </div>
-        <div class="footer-col">
-          <h4>Services</h4>
-          <ul role="list">
-            <li><a href="./index.html#services">IoT & Automation</a></li>
-            <li><a href="./index.html#services">Cybersecurity</a></li>
-            <li><a href="./index.html#services">AI Datacenter</a></li>
-            <li><a href="./index.html#services">Small Business ERP</a></li>
-          </ul>
-        </div>
-        <div class="footer-col">
-          <h4>Resources</h4>
-          <ul role="list">
-            <li><a href="./demos.html">Demos</a></li>
-            <li><a href="./about.html#gallery">Client Stories</a></li>
-            <li><a href="./about.html">About</a></li>
-            <li><a href="./engage.html#vendor-portal">Vendor Portal</a></li>
-          </ul>
-        </div>
-        <div class="footer-col">
-          <h4>Contact</h4>
-          <ul role="list">
-            <li><a href="mailto:info@thalassa-us.com">info@thalassa-us.com</a></li>
-            <li><a href="tel:+15715100220">+1 (571) 510-0220</a></li>
-          </ul>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        <p>&copy; 2026 Thalassa US. All rights reserved.</p>
-      </div>
-    </div>
-  </footer>
-
-  <script src="./app.js"></script>
-</body>
-</html>
+<div class="shell">
+<div class="topbar"><div class="wrap topbar-in"><a class="brand" href="./index.html" aria-label="Thalassa US — Home"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 300 260" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M150 10 L240 35 Q248 38 248 46 L244 115 Q238 178 150 218 Q62 178 56 115 L52 46 Q52 38 60 35 Z" fill="none" stroke="#1E3A5F" stroke-width="10" stroke-linejoin="round"/><path d="M76 112 Q102 68 150 62 Q198 68 226 112" fill="none" stroke="#1E3A5F" stroke-width="12" stroke-linecap="round"/><path d="M88 118 Q120 152 150 155 Q180 152 212 118" fill="none" stroke="#0D9488" stroke-width="7" stroke-linecap="round"/><path d="M127 92 L148 79 M127 92 L127 118 L148 131 L169 118 L169 92" fill="none" stroke="#F59E0B" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="148" cy="106" r="10" fill="#F59E0B"/><line x1="230" y1="110" x2="262" y2="96" stroke="#1E3A5F" stroke-width="3.5"/><circle cx="266" cy="94" r="5.5" fill="none" stroke="#1E3A5F" stroke-width="3.5"/></svg></span><span class="brand-name">Thalassa US</span></a><a href="./index.html#work">The work</a><a href="./index.html#method">Method</a><a href="./about.html">About</a><a class="top-cta" href="./contact.html">Start with the risk →</a></div></div>
+<main>
+<section class="hero"><div class="wrap"><div class="kicker">ABOUT THALASSA US</div><h1>One accountable lead.</h1><p class="lead">Thalassa US is a founder-led cybersecurity and practical AI advisory firm for growing organizations. No bench, no theater — the person you hire is the person who shows up.</p></div></section>
+<section class="story"><div class="wrap story-grid"><div class="story-label"><strong>02</strong>WHY<br>FOUNDER-LED</div><div class="story-copy">
+<p>Most consulting firms sell you a senior partner and deliver a junior team. <strong>The model here is the opposite:</strong> one senior advisor, close to the work from the first session to the final handoff.</p>
+<p>That only works with scope discipline — taking on work one focused advisor can credibly deliver, and saying no to the rest. <strong>You will never find a 24/7 SOC, a rotating bench, or a client roster that doesn&rsquo;t exist on this site.</strong> What you find is what you get.</p>
+<p>When an engagement needs more hands than one advisor — a wider assessment, parallel workstreams, specialized tooling — I bring <strong>vetted delivery partners</strong> and stay accountable for the outcome. You approve the team. You always know who&rsquo;s doing the work, and why.</p>
+</div></div></section>
+<section class="scope"><div class="wrap"><h2>What I take on.<br>What I don&rsquo;t.</h2><p>Plain scope, stated up front. If what you need is in the right column, I&rsquo;ll tell you who does it well — and stay in my lane.</p><div class="scope-grid">
+<div class="scope-col yes"><h3>I TAKE ON</h3><ul>
+<li>Incident readiness<span>Tabletop exercises, response runbooks, decision rights settled before the clock starts.</span></li>
+<li>OT &amp; infrastructure hygiene<span>Attack-path reviews and control priorities for operational environments.</span></li>
+<li>Secure AI agent deployment<span>Scope and permissions reviews, data boundary design, agent incident playbooks.</span></li>
+<li>Practical AI automation<span>Bounded pilots with documented guardrails your team can own.</span></li>
+<li>CMMC &amp; NIST 800-171 readiness<span>Practitioner-led preparation for defense-adjacent contractors.</span></li>
+<li>AI governance<span>Data safeguards, access controls, policy, NIST AI RMF alignment.</span></li>
+<li>GCC High readiness<span>Guidance for moving into Microsoft&rsquo;s government cloud — securely and compliantly.</span></li>
+</ul></div>
+<div class="scope-col no"><h3>I DON&rsquo;T</h3><ul>
+<li>24/7 SOC operations<span>That&rsquo;s a staffing business. I&rsquo;m an advisory practice.</span></li>
+<li>Full-scope EPC or construction<span>I assess cyber risk for critical infrastructure — I don&rsquo;t build power plants.</span></li>
+<li>Nuclear safety engineering<span>My nuclear work is cybersecurity risk assessment (NERC CIP, NRC cyber requirements) — a different profession from safety engineering.</span></li>
+<li>Pen-testing as a commodity<span>If you need a checkbox pentest, there are good shops for that. I do attack-path reviews tied to business impact.</span></li>
+<li>Software resale<span>Recommendations start from the operating problem — never a product quota.</span></li>
+</ul></div>
+</div></div></section>
+<section class="model"><div class="wrap"><h2>How an engagement runs.</h2><p>Smaller and sharper than an enterprise program. The shape stays consistent; the starting point depends on your pressure.</p><div class="steps">
+<div class="step"><b>01 / FRAME</b><strong>Start with the decision</strong><span>A first conversation defines what you&rsquo;re deciding, what good looks like, and whether I&rsquo;m the right fit. If not, I&rsquo;ll say so.</span></div>
+<div class="step"><b>02 / WORK</b><strong>Senior-led, partner-backed</strong><span>I lead the work directly. Where scope needs specialists, vetted partners join — with your approval, under my accountability.</span></div>
+<div class="step"><b>03 / LEAVE</b><strong>Transfer, don&rsquo;t linger</strong><span>Clear owners, usable artifacts, and a dated sequence of next moves your team can run without me.</span></div>
+</div></div></section>
+<section class="closing"><div class="wrap"><h2>Name the risk you can&rsquo;t afford to leave vague.</h2><a class="action" href="./contact.html"><span>Start the conversation</span><span aria-hidden="true">↑</span></a><footer class="footer"><span>THALASSA US · CYBERSECURITY + PRACTICAL AI ADVISORY</span><span>MARYLAND · FOR GROWING ORGANIZATIONS</span></footer></div></section>
+</main></div>
+</body></html>
